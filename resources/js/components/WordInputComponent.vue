@@ -1,15 +1,15 @@
 <template>
-    <input type="text" :placeholder="placeholder" />
+    <input type="text" :placeholder="plholder" @input="$emit('read')" />
 </template>
 <script>
 export default {
-    props: ["placeholderText"],
+    props: {
+        placeholderText: String,
+    },
     data() {
         return {
-            placeholder: this.placeholderText,
+            plholder: this.placeholderText,
         };
     },
-    methods: {},
-    computed: {},
 };
 </script>

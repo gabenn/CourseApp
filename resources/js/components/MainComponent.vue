@@ -1,11 +1,9 @@
 <template>
     <div>
         <WordInput
-            placeholderText="polishWords"
-            :change="readAllWords"
+            v-bind:placeholderText="'Polish Word'"
+            @read="readAllWords"
         ></WordInput>
-        <button @click="readAllWords" type="button" id="readBtn">Read</button>
-
         <form
             method="POST"
             action="/api/courses"
@@ -22,14 +20,14 @@
                 max="20"
                 type="number"
                 id="wordsQuantityInput"
-                placeholder="Words Quantity"
+                placeholder="quantity"
                 @change="displayWordsInputs"
             />
             <div id="wordsBox" class="flex flex-row">
                 <div id="polishWordsBox" v-for="input in polishWordsInputs">
                     {{ input }}
                 </div>
-                <div id="englishWordsBox" v-for="input in polishWordsInputs">
+                <div id="englishWordsBox" v-for="input in englishWordsInputs">
                     {{ input }}
                 </div>
             </div>
@@ -66,31 +64,30 @@ export default {
             let wordsQuantity = target.value;
             wordsQuantity = wordsQuantity > 0 ? wordsQuantity : 1;
             wordsQuantity = wordsQuantity < 20 ? wordsQuantity : 20;
-            // target.value = wordsQuantity;
+
             for (let i = 0; i < wordsQuantity; i++) {
-                const polishWordInput = this.WordInput;
-                // this.polishWordsInput.push(polishWordInput);
-                console.log(polishWordInput);
+                const polishWordInput = {};
+                this.polishWordsInputs.push(polishWordInput);
             }
         },
         readAllWords() {
             console.log("read");
 
-            // this.polishWords.length = 0;
-            // this.englishWords.length = 0;
+            this.polishWords.length = 0;
+            this.englishWords.length = 0;
 
-            // this.polishWordsInputs.forEach((input) =>
-            //     this.polishWords.push(input.value)
-            // );
+            this.polishWordsInputs.forEach((input) =>
+                this.polishWords.push(input.value)
+            );
 
-            // this.englishWordsInputs.forEach((input) =>
-            //     this.englishWordsthis.push(input.value)
-            // );
+            this.englishWordsInputs.forEach((input) =>
+                this.englishWords.push(input.value)
+            );
 
-            // document.getElementById("polishWordsInput").value =
-            //     this.polishWords.join("|");
-            // document.getElementById("englishWordsInput").value =
-            //     this.englishWords.join("|");
+            document.getElementById("polishWordsInput").value =
+                this.polishWords.join("|");
+            document.getElementById("englishWordsInput").value =
+                this.englishWords.join("|");
         },
     },
     computed: {},
