@@ -14,7 +14,7 @@ class Word extends Model
 
     protected $primaryKey = 'id';
 
-    protected $fillable = ['polish','english'];
+    protected $fillable = ['course_id','polish','english'];
 
     public function course(){
         return $this->belongsTo(Course::class);

@@ -95,11 +95,12 @@ export default {
                 .post(`http://crudapi-master.test/api/courses`, courseData)
                 .then((res) => console.log(response))
                 .catch((error) =>
-                    error != undefinded ? console.log(error.response) : null
+                    error != undefined ? console.log(error.response) : null
                 );
 
             for (let i = 0; i < this.polishWords.length; i++) {
                 const wordsData = {
+                    course_id: 1, // jak dodawać do course który dodaje wyżejS
                     polish: this.polishWords[i],
                     english: this.englishWords[i],
                 };
