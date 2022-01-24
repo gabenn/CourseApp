@@ -25,10 +25,18 @@
             />
             <div id="wordsBox" class="flex flex-row">
                 <div id="polishWordsBox" v-for="input in polishWordsInputs">
-                    {{ input }}
+                    <WordInput
+                        v-bind:placeholderText="`Polish Word`"
+                        @read="readAllWords"
+                        ref="polishWordsInputs"
+                    ></WordInput>
                 </div>
                 <div id="englishWordsBox" v-for="input in englishWordsInputs">
-                    {{ input }}
+                    <WordInput
+                        v-bind:placeholderText="`English Word`"
+                        @read="readAllWords"
+                        ref="englishWordsInputs"
+                    ></WordInput>
                 </div>
             </div>
             <input type="submit" value="Add Course" />
@@ -66,8 +74,12 @@ export default {
             wordsQuantity = wordsQuantity < 20 ? wordsQuantity : 20;
 
             for (let i = 0; i < wordsQuantity; i++) {
-                const polishWordInput = {};
+                const polishWordInput = {
+                    id: Math.floor(Math.random() * 100),
+                };
+                console.log("for");
                 this.polishWordsInputs.push(polishWordInput);
+                this.englishWordsInputs.push(polishWordInput);
             }
         },
         readAllWords() {
@@ -76,9 +88,9 @@ export default {
             this.polishWords.length = 0;
             this.englishWords.length = 0;
 
-            this.polishWordsInputs.forEach((input) =>
-                this.polishWords.push(input.value)
-            );
+            this.$refs.polishWordsInputs.forEach((input) => {
+                this.polishWords.push(input.$el.value);
+            });
 
             this.englishWordsInputs.forEach((input) =>
                 this.englishWords.push(input.value)
