@@ -2,12 +2,14 @@
     <div>
         <form
             method="POST"
-            action="/api/courses"
+            action="/api/words"
             enctype="application/x-www-form-urlencoded"
         >
-            <input type="text" name="courseName" placeholder="Course Name" />
-            <input type="hidden" name="polishWords" id="polishWordsInput" />
-            <input type="hidden" name="englishWords" id="englishWordsInput" />
+            <input
+                type="text"
+                placeholder="Course Name"
+                ref="courseNameInput"
+            />
             <input
                 min="1"
                 max="20"
@@ -32,7 +34,7 @@
                     ></WordInput>
                 </div>
             </div>
-            <input type="submit" value="Add Course" />
+            <input type="button" @click="submitForm" value="Add Course" />
         </form>
     </div>
 </template>
@@ -84,11 +86,29 @@ export default {
             this.$refs.englishWordsInputs.forEach((input) =>
                 this.englishWords.push(input.$el.value)
             );
+        },
+        submitForm() {
+            const courseData = {
+                name: this.$refs.courseNameInput.value,
+            };
+            axios
+                .post(`http://crudapi-master.test/api/courses`, courseData)
+                .then((res) => console.log(response))
+                .catch((error) =>
+                    error != undefinded ? console.log(error.response) : null
+                );
 
-            document.getElementById("polishWordsInput").value =
-                this.polishWords.join("|");
-            document.getElementById("englishWordsInput").value =
-                this.englishWords.join("|");
+            for (let i = 0; i < this.polishWords.length; i++) {
+                const wordsData = {
+                    polish: this.polishWords[i],
+                    english: this.englishWords[i],
+                };
+
+                axios
+                    .post(`http://crudapi-master.test/api/words`, wordsData)
+                    .then((res) => console.log(response))
+                    .catch((error) => console.log(error.response));
+            }
         },
     },
     computed: {},
