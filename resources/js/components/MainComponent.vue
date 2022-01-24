@@ -60,7 +60,6 @@ export default {
     },
     methods: {
         displayWordsInputs({ target }) {
-            console.log("display");
             this.polishWordsInputs.forEach((word) => {});
             this.englishWordsInputs.forEach((word) => {});
 
@@ -77,14 +76,11 @@ export default {
                 const polishWordInput = {
                     id: Math.floor(Math.random() * 100),
                 };
-                console.log("for");
                 this.polishWordsInputs.push(polishWordInput);
                 this.englishWordsInputs.push(polishWordInput);
             }
         },
         readAllWords() {
-            console.log("read");
-
             this.polishWords.length = 0;
             this.englishWords.length = 0;
 
@@ -92,8 +88,8 @@ export default {
                 this.polishWords.push(input.$el.value);
             });
 
-            this.englishWordsInputs.forEach((input) =>
-                this.englishWords.push(input.value)
+            this.$refs.englishWordsInputs.forEach((input) =>
+                this.englishWords.push(input.$el.value)
             );
 
             document.getElementById("polishWordsInput").value =
