@@ -15,10 +15,15 @@ class CreateWordsTable extends Migration
     public function up()
     {
         Schema::create('words', function (Blueprint $table) {
-            $table->id();
+            $table->increments('id');
+            $table->unsignedInteger('course_id');
             $table->string('polish');
             $table->string('english');
             $table->timestamps();
+            $table->foreign('course_id')
+                ->references('id')
+                ->on('courses')
+                ->onDelete('cascade');
         });
     }
 

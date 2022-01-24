@@ -10,5 +10,13 @@ class Course extends Model
 {
     use HasFactory;
 
+    protected $table = 'courses';
+
+    protected $primaryKey = 'id';
+
     protected $fillable = ['name'];
+
+    public function words(){
+        return $this->hasMany(Word::class);
+    }
 }
