@@ -26,7 +26,7 @@
     <body class="antialiased">
         <h1>ADD</h1>
         <div id='app'>
-            <main-component></main-component>
+            <add-component></add-component>
         </div>
     </body>
 </html>

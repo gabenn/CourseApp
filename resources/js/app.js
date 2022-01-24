@@ -1,7 +1,8 @@
 require('./bootstrap');
 import Vue from 'vue';
 
-Vue.component('main-component', require('./components/MainComponent.vue').default);
+Vue.component('add-component', require('./components/AddComponent.vue').default);
+Vue.component('edit-component', require('./components/EditComponent.vue').default);
 
 
 const app = new Vue({
