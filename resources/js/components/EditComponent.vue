@@ -1,20 +1,28 @@
 <template>
     <div>
-        <WordInput
-            v-bind:placeholderText="'Polish Word'"
-            @read="readAllWords"
-        ></WordInput>
         <form
             method="POST"
             action="/api/courses"
             enctype="application/x-www-form-urlencoded"
         >
-            <button @click="displayWordsInputs" type="button" id="displayBtn">
-                Display Words Inputs
-            </button>
-            <input type="text" name="courseName" placeholder="Course Name" />
-            <input type="hidden" name="polishWords" id="polishWordsInput" />
-            <input type="hidden" name="englishWords" id="englishWordsInput" />
+            <input
+                type="text"
+                name="courseName"
+                placeholder="Course Name"
+                ref="courseNameInput"
+            />
+            <input
+                type="hidden"
+                name="polishWords"
+                id="polishWordsInput"
+                ref="polishWordsInput"
+            />
+            <input
+                type="hidden"
+                name="englishWords"
+                id="englishWordsInput"
+                ref="englishWordsInput"
+            />
             <input
                 min="1"
                 max="20"
@@ -24,14 +32,20 @@
                 @change="displayWordsInputs"
             />
             <div id="wordsBox" class="flex flex-row">
-                <div id="polishWordsBox" v-for="input in polishWordsInputs">
+                <div
+                    id="polishWordsBox"
+                    v-for="input in polishWordsInputs.length"
+                >
                     <WordInput
                         v-bind:placeholderText="`Polish Word`"
                         @read="readAllWords"
                         ref="polishWordsInputs"
                     ></WordInput>
                 </div>
-                <div id="englishWordsBox" v-for="input in englishWordsInputs">
+                <div
+                    id="englishWordsBox"
+                    v-for="input in englishWordsInputs.length"
+                >
                     <WordInput
                         v-bind:placeholderText="`English Word`"
                         @read="readAllWords"
@@ -39,7 +53,7 @@
                     ></WordInput>
                 </div>
             </div>
-            <input type="submit" value="Add Course" />
+            <input type="button" @click="patchCourse" value="Edit Course" />
         </form>
     </div>
 </template>
@@ -96,6 +110,17 @@ export default {
                 this.polishWords.join("|");
             document.getElementById("englishWordsInput").value =
                 this.englishWords.join("|");
+        },
+        patchCourse(courseId = 11) {
+            const data = {
+                courseName: this.$refs.courseNameInput.value,
+                polishWords: this.$refs.polishWordsInput.value,
+                englishWords: this.$refs.englishWordsInput.value,
+            };
+            axios
+                .patch(`http://crudapi-master.test/api/courses/11`, data)
+                .then((res) => console.log(response))
+                .catch((error) => console.log(error.response));
         },
     },
     computed: {},

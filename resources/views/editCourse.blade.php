@@ -19,14 +19,15 @@
                 font-family: 'Nunito', sans-serif;
             }
         </style>
+
+        <script src="{{mix('js/app.js')}}" defer>
+
+        </script>
     </head>
     <body class="antialiased">
         <h1>Edit</h1>
-        <form method="POST" action="/crudApi/public/api/courses/{{$course->id}}">
-            @csrf
-            @method('patch')
-            <input type="text" value="{{$course->courseName}}" name="courseName" placeholder="Course Name">
-            <input type="submit" value="Edit Course">
-        </form>
+        <div id='app'>
+            <edit-component></edit-component>
+        </div>
     </body>
 </html>
