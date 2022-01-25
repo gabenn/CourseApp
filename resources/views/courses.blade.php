@@ -3,9 +3,10 @@
     <head>
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1">
-        <meta name="csrf-token" content="{{ csrf_token() }}" />
+
         <title>Laravel</title>
         <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/css/bootstrap.min.css" integrity="sha384-TX8t27EcRE3e/ihU7zmQxVncDAy5uIKz4rEkgIXeMed4M0jlfIDPvg6uqKI2xXr2" crossorigin="anonymous">
+        
         <!-- Fonts -->
         <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700&display=swap" rel="stylesheet">
 
@@ -24,7 +25,7 @@
         </script>
     </head>
     <body class="antialiased">
-        <div class="container">
+        <div id='app'>
             <header class="d-flex justify-content-center py-3">
                 <ul
                     class="nav col-12 col-md-auto mb-2 justify-content-center mb-md-0"
@@ -41,11 +42,18 @@
                     <li><a href="/add-course" class="nav-link px-2 link-dark">Add Course</a></li>
                 </ul>
             </header>
-        </div>
-        <hr/>
-        <h1>Add Course</h1>
-        <div id='app' class="d-flex justify-content-center">
-            <add-component></add-component>
+            <hr/>
+            <h1>Created Courses</h1>
+            <div class='container flex flex-wrap '>
+            @foreach($courses as $course)
+                <a href={{"/courses/".$course->id}}>
+                    <article class="border p-3">
+                        <h3>{{$course->name}}</h3>
+                        <p>Created At: {{$course->created_at}}</p>
+                    </article>
+                </a>
+            @endforeach
+            </div>
         </div>
     </body>
 </html>

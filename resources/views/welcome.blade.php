@@ -35,10 +35,10 @@
                             <a href="/" class="nav-link px-2 link-secondary">Home</a>
                         </li>
                         <li>
-                            <a href="/api/courses" class="nav-link px-2 link-dark">Courses</a>
+                            <a href="/courses" class="nav-link px-2 link-dark">Courses</a>
                         </li>
                         <li>
-                            <a href="/api/words" class="nav-link px-2 link-dark">Words</a>
+                            <a href="/words" class="nav-link px-2 link-dark">Words</a>
                         </li>
                         <li><a href="/add-course" class="nav-link px-2 link-dark">Add Course</a></li>
                     </ul>
