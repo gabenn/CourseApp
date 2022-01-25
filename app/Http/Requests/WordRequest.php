@@ -24,9 +24,8 @@ class WordRequest extends FormRequest
     public function rules()
     {
         return [
-            'course_id' => ['required'],
-            'polish' => ['required'],
-            'english' => ['required']
+            'words.*.polish' => ['required'],
+            'words.*.english' => ['required']
         ];
     }
 }

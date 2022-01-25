@@ -1,42 +1,58 @@
 <template>
-    <div>
-        <form
-            method="POST"
-            action="/api/words"
-            enctype="application/x-www-form-urlencoded"
-        >
+    <form
+        method="POST"
+        action="/api/words"
+        enctype="application/x-www-form-urlencoded"
+    >
+        <div>
+            <label for="courseNameInput">Course Name </label>
             <input
+                class="form-control"
                 type="text"
                 placeholder="Course Name"
+                id="courseNameInput"
                 ref="courseNameInput"
             />
+        </div>
+        <div>
+            <label for="wordsQuantityInput">Words Quantity</label>
             <input
                 min="1"
                 max="20"
                 type="number"
                 id="wordsQuantityInput"
-                placeholder="quantity"
+                placeholder="0"
                 @change="displayWordsInputs"
+                class="form-control"
             />
-            <div id="wordsBox" class="flex flex-row">
-                <div id="polishWordsBox" v-for="input in polishWordsInputs">
+        </div>
+        <div id="wordsBox" class="flex flex-row mt-5 mb-5">
+            <ol class="flex flex-column" id="polishWordsBox">
+                <li v-for="input in polishWordsInputs">
                     <WordInput
                         v-bind:placeholderText="`Polish Word`"
                         @read="readAllWords"
                         ref="polishWordsInputs"
                     ></WordInput>
-                </div>
-                <div id="englishWordsBox" v-for="input in englishWordsInputs">
+                </li>
+            </ol>
+            <ol class="flex flex-column" id="englishWordsBox">
+                <li v-for="input in englishWordsInputs">
                     <WordInput
                         v-bind:placeholderText="`English Word`"
                         @read="readAllWords"
                         ref="englishWordsInputs"
                     ></WordInput>
-                </div>
-            </div>
-            <input type="button" @click="submitForm" value="Add Course" />
-        </form>
-    </div>
+                </li>
+            </ol>
+        </div>
+        <input
+            type="button"
+            @click="submitForm"
+            value="Add Course"
+            class="btn btn-primary"
+        />
+    </form>
 </template>
 <script>
 import WordInput from "./WordInputComponent";
@@ -68,9 +84,7 @@ export default {
             wordsQuantity = wordsQuantity < 20 ? wordsQuantity : 20;
 
             for (let i = 0; i < wordsQuantity; i++) {
-                const polishWordInput = {
-                    id: Math.floor(Math.random() * 100),
-                };
+                const polishWordInput = "";
                 this.polishWordsInputs.push(polishWordInput);
                 this.englishWordsInputs.push(polishWordInput);
             }
@@ -92,24 +106,25 @@ export default {
                 name: this.$refs.courseNameInput.value,
             };
             axios
-                .post(`http://crudapi-master.test/api/courses`, courseData)
-                .then((res) => console.log(response))
+                .post(`${window.location.origin}/api/courses`, courseData)
+                .then((res) => {
+                    const data = {
+                        words: [],
+                    };
+                    for (let i = 0; i < this.polishWords.length; i++) {
+                        data.words.push({
+                            polish: this.polishWords[i],
+                            english: this.englishWords[i],
+                        });
+                    }
+                    axios
+                        .post(`${window.location.origin}/api/words`, data)
+                        .then((res) => console.log(response))
+                        .catch((error) => console.log(error.response));
+                })
                 .catch((error) =>
                     error != undefined ? console.log(error.response) : null
                 );
-
-            for (let i = 0; i < this.polishWords.length; i++) {
-                const wordsData = {
-                    course_id: 1, // jak dodawać do course który dodaje wyżejS
-                    polish: this.polishWords[i],
-                    english: this.englishWords[i],
-                };
-
-                axios
-                    .post(`http://crudapi-master.test/api/words`, wordsData)
-                    .then((res) => console.log(response))
-                    .catch((error) => console.log(error.response));
-            }
         },
     },
     computed: {},
