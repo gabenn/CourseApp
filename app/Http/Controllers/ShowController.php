@@ -24,8 +24,9 @@ class ShowController extends BaseController
     function edit($courseId){
 
         $course = Course::find($courseId);
+        $words = Word::all()->where('course_id',$courseId);
     
-        return view('editCourse', ['course' => $course]);
+        return view('editCourse', ['course' => $course, 'words' => $words]);
     }
 
     function add(){

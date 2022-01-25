@@ -58,6 +58,7 @@
             <hr/>
             <h1>Course: {{$course->name}}</h1>
             <button id='deleteCourseBtn' onclick='deleteCourse({{$course->id}})'>X</button>
+            <a href="/edit-course/{{$course->id}}"><button>Edit</button></a>
             <div class='container flex flex-row justify-content-around '>
                 <div>
                     @foreach($words as $word)

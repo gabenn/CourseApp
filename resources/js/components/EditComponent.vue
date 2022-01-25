@@ -1,61 +1,59 @@
 <template>
-    <div>
-        <form
-            method="POST"
-            action="/api/courses"
-            enctype="application/x-www-form-urlencoded"
-        >
+    <form
+        method="POST"
+        action="/api/words"
+        enctype="application/x-www-form-urlencoded"
+    >
+        <div>
+            <label for="courseNameInput">Course Name </label>
             <input
+                class="form-control"
                 type="text"
-                name="courseName"
                 placeholder="Course Name"
+                id="courseNameInput"
                 ref="courseNameInput"
             />
-            <input
-                type="hidden"
-                name="polishWords"
-                id="polishWordsInput"
-                ref="polishWordsInput"
-            />
-            <input
-                type="hidden"
-                name="englishWords"
-                id="englishWordsInput"
-                ref="englishWordsInput"
-            />
+        </div>
+        <div>
+            <label for="wordsQuantityInput">Words Quantity</label>
             <input
                 min="1"
                 max="20"
                 type="number"
                 id="wordsQuantityInput"
-                placeholder="quantity"
+                ref="wordsQuantityInput"
+                placeholder="0"
                 @change="displayWordsInputs"
+                class="form-control"
             />
-            <div id="wordsBox" class="flex flex-row">
-                <div
-                    id="polishWordsBox"
-                    v-for="input in polishWordsInputs.length"
-                >
+        </div>
+        <div id="wordsBox" class="flex flex-row mt-5 mb-5">
+            <ol class="flex flex-column" id="polishWordsBox">
+                <li v-for="input in polishWordsInputs">
                     <WordInput
                         v-bind:placeholderText="`Polish Word`"
                         @read="readAllWords"
                         ref="polishWordsInputs"
                     ></WordInput>
-                </div>
-                <div
-                    id="englishWordsBox"
-                    v-for="input in englishWordsInputs.length"
-                >
+                </li>
+            </ol>
+            <ol class="flex flex-column" id="englishWordsBox">
+                <li v-for="input in englishWordsInputs">
                     <WordInput
                         v-bind:placeholderText="`English Word`"
                         @read="readAllWords"
                         ref="englishWordsInputs"
                     ></WordInput>
-                </div>
-            </div>
-            <input type="button" @click="patchCourse" value="Edit Course" />
-        </form>
-    </div>
+                </li>
+            </ol>
+        </div>
+        <input
+            type="button"
+            @click="submitForm"
+            value="Edit Course"
+            class="btn btn-primary"
+        />
+    </form>
 </template>
 <script>
 import WordInput from "./WordInputComponent";
@@ -64,6 +62,7 @@ export default {
     components: {
         WordInput,
     },
+    props: ["course", "words"],
     data() {
         return {
             polishWordsInputs: [],
@@ -74,9 +73,6 @@ export default {
     },
     methods: {
         displayWordsInputs({ target }) {
-            this.polishWordsInputs.forEach((word) => {});
-            this.englishWordsInputs.forEach((word) => {});
-
             this.polishWords.length = 0;
             this.englishWords.length = 0;
             this.polishWordsInputs.length = 0;
@@ -87,9 +83,7 @@ export default {
             wordsQuantity = wordsQuantity < 20 ? wordsQuantity : 20;
 
             for (let i = 0; i < wordsQuantity; i++) {
-                const polishWordInput = {
-                    id: Math.floor(Math.random() * 100),
-                };
+                const polishWordInput = "";
                 this.polishWordsInputs.push(polishWordInput);
                 this.englishWordsInputs.push(polishWordInput);
             }
@@ -105,24 +99,62 @@ export default {
             this.$refs.englishWordsInputs.forEach((input) =>
                 this.englishWords.push(input.$el.value)
             );
-
-            document.getElementById("polishWordsInput").value =
-                this.polishWords.join("|");
-            document.getElementById("englishWordsInput").value =
-                this.englishWords.join("|");
         },
-        patchCourse(courseId = 11) {
-            const data = {
-                courseName: this.$refs.courseNameInput.value,
-                polishWords: this.$refs.polishWordsInput.value,
-                englishWords: this.$refs.englishWordsInput.value,
+        submitForm() {
+            const course = JSON.parse(this.course);
+            const courseData = {
+                name: this.$refs.courseNameInput.value,
             };
             axios
-                .patch(`http://crudapi-master.test/api/courses/11`, data)
-                .then((res) => console.log(response))
-                .catch((error) => console.log(error.response));
+                .patch(
+                    `${window.location.origin}/api/courses/${course.id}`,
+                    courseData
+                )
+                .then((res) => {
+                    // const data = {
+                    //     words: [],
+                    // };
+                    // for (let i = 0; i < this.polishWords.length; i++) {
+                    //     data.words.push({
+                    //         polish: this.polishWords[i],
+                    //         english: this.englishWords[i],
+                    //     });
+                    // }
+                    // axios
+                    //     .post(`${window.location.origin}/api/words`, data)
+                    //     .then((res) => console.log(response))
+                    //     .catch((error) => console.log(error.response));
+                })
+                .catch((error) =>
+                    error != undefined ? console.log(error.response) : null
+                )
+                .then(() => (window.location.href = "/courses"));
         },
     },
     computed: {},
+    created() {
+        const wordsArray = JSON.parse(this.words);
+
+        wordsArray.forEach((word) => {
+            const polishWordInput = "";
+            this.polishWordsInputs.push(polishWordInput);
+            this.englishWordsInputs.push(polishWordInput);
+
+            this.polishWords.push(word.polish);
+            this.englishWords.push(word.english);
+        });
+    },
+    mounted() {
+        const wordsArray = JSON.parse(this.words);
+        const course = JSON.parse(this.course);
+        this.$refs.polishWordsInputs.forEach(
+            (input, i) => (input.$el.value = this.polishWords[i])
+        );
+        this.$refs.englishWordsInputs.forEach(
+            (input, i) => (input.$el.value = this.englishWords[i])
+        );
+        this.$refs.wordsQuantityInput.value = wordsArray.length;
+        this.$refs.courseNameInput.value = course.name;
+    },
 };
 </script>
