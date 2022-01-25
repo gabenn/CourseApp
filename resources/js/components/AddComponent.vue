@@ -124,7 +124,8 @@ export default {
                 })
                 .catch((error) =>
                     error != undefined ? console.log(error.response) : null
-                );
+                )
+                .then(() => (window.location.href = "/courses"));
         },
     },
     computed: {},

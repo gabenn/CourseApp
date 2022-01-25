@@ -3,6 +3,7 @@
     <head>
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="csrf-token" content="{{ csrf_token() }}" />
 
         <title>Laravel</title>
         <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/css/bootstrap.min.css" integrity="sha384-TX8t27EcRE3e/ihU7zmQxVncDAy5uIKz4rEkgIXeMed4M0jlfIDPvg6uqKI2xXr2" crossorigin="anonymous">
@@ -22,6 +23,18 @@
         </style>
         <script src="{{mix('js/app.js')}}" defer>
 
+        </script>
+        <script defer>
+            
+            const deleteCourse = courseId => { 
+                console.log(courseId)
+                axios.delete(`${window.location.origin}/api/courses/${courseId}`)
+                .then((res) => {
+                    console.log(res);
+                    window.location.href = "/courses"
+                })
+                .catch(err=>console.log(err))
+            }
         </script>
     </head>
     <body class="antialiased">
@@ -44,6 +57,7 @@
             </header>
             <hr/>
             <h1>Course: {{$course->name}}</h1>
+            <button id='deleteCourseBtn' onclick='deleteCourse({{$course->id}})'>X</button>
             <div class='container flex flex-row justify-content-around '>
                 <div>
                     @foreach($words as $word)

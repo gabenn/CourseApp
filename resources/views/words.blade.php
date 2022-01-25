@@ -47,12 +47,12 @@
             <div class='container flex flex-wrap justify-content-around'>
                 <div>
                     @foreach($words as $word)
-                        <h3>Polish Word: {{$word->polish}}</h3>
+                        <h4>Polish Word: {{$word->polish}}</h4>
                     @endforeach
                 </div>
                 <div>
                     @foreach($words as $word)
-                        <h3>English Word: {{$word->english}}</h3>
+                        <h4>English Word: {{$word->english}}</h4>
                     @endforeach
                 </div>
             </div>
