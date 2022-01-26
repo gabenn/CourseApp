@@ -25,7 +25,8 @@ class WordRequest extends FormRequest
     {
         return [
             'words.*.polish' => ['required'],
-            'words.*.english' => ['required']
+            'words.*.english' => ['required'],
+            'course_id' => ['required']
         ];
     }
 }

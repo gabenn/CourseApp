@@ -110,6 +110,7 @@ export default {
                 .then((res) => {
                     const data = {
                         words: [],
+                        course_id: 0,
                     };
                     for (let i = 0; i < this.polishWords.length; i++) {
                         data.words.push({

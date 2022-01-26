@@ -101,6 +101,7 @@ export default {
             );
         },
         submitForm() {
+            this.readAllWords();
             const course = JSON.parse(this.course);
             const words = JSON.parse(this.words);
             const courseData = {
@@ -108,18 +109,15 @@ export default {
             };
             const data = {
                 words: [],
+                course_id: course.id,
             };
+
             axios
-                .patch(
-                    `${window.location.origin}/api/courses/${course.id}`,
-                    courseData
-                )
+                .patch(`/api/courses/${course.id}`, courseData)
                 .then((res) => {
                     words.forEach((item) =>
                         axios
-                            .delete(
-                                `${window.location.origin}/api/words/${item.id}`
-                            )
+                            .delete(`/api/words/${item.id}`)
                             .then((res) => console.log(res))
                             .catch((error) => console.log(error))
                     );
@@ -132,7 +130,7 @@ export default {
                         });
                     }
                     axios
-                        .post(`${window.location.origin}/api/words`, data)
+                        .post(`/api/words`, data)
                         .then((res) => console.log(res))
                         .catch((error) => console.log(error));
                 })
@@ -140,7 +138,6 @@ export default {
                 .then(() => (window.location.href = "/courses"));
         },
     },
-    computed: {},
     created() {
         const wordsArray = JSON.parse(this.words);
         if (wordsArray.length > 0)

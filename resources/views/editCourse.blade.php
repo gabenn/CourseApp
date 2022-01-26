@@ -24,18 +24,6 @@
         <script src="{{mix('js/app.js')}}" defer>
 
         </script>
-        <script defer>
-            
-            const deleteCourse = courseId => { 
-                console.log(courseId)
-                axios.delete(`${window.location.origin}/api/courses/${courseId}`)
-                .then((res) => {
-                    console.log(res);
-                    window.location.href = "/courses"
-                })
-                .catch(err=>console.log(err))
-            }
-        </script>
     </head>
     <body class="antialiased">
         <div id='app'>

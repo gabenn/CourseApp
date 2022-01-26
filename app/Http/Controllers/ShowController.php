@@ -24,8 +24,8 @@ class ShowController extends BaseController
     function edit($courseId){
 
         $course = Course::find($courseId);
-        $words = Word::all()->where('course_id',$courseId);
-    
+        $words = Word::where('course_id',$courseId)->get();
+        
         return view('editCourse', ['course' => $course, 'words' => $words]);
     }
 
@@ -34,9 +34,9 @@ class ShowController extends BaseController
     }
 
     function course($courseId){
-
+        
         $course = Course::find($courseId);
-        $words = Word::all()->where('course_id',$courseId);
+        $words = Word::where('course_id',$courseId)->get();
         return view('course', ['course' => $course, 'words' => $words]);
     }
 
