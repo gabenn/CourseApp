@@ -44,4 +44,12 @@ class ShowController extends BaseController
         $words = Word::all();
         return view('words', ['words' => $words]);
     }
+
+    
+    function test($courseId){
+        
+        $course = Course::find($courseId);
+        $words = Word::where('course_id',$courseId)->get();
+        return view('test', ['course' => $course, 'words' => $words]);
+    }
 }

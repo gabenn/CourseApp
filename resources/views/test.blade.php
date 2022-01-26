@@ -4,10 +4,8 @@
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <meta name="csrf-token" content="{{ csrf_token() }}" />
-
         <title>Laravel</title>
         <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/css/bootstrap.min.css" integrity="sha384-TX8t27EcRE3e/ihU7zmQxVncDAy5uIKz4rEkgIXeMed4M0jlfIDPvg6uqKI2xXr2" crossorigin="anonymous">
-        
         <!-- Fonts -->
         <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700&display=swap" rel="stylesheet">
 
@@ -24,21 +22,9 @@
         <script src="{{mix('js/app.js')}}" defer>
 
         </script>
-        <script defer>
-            
-            const deleteCourse = courseId => { 
-                console.log(courseId)
-                axios.delete(`${window.location.origin}/api/courses/${courseId}`)
-                .then((res) => {
-                    console.log(res);
-                    window.location.href = "/courses"
-                })
-                .catch(err=>console.log(err))
-            }
-        </script>
     </head>
     <body class="antialiased">
-        <div id='app'>
+        <div class="container">
             <header class="d-flex justify-content-center py-3">
                 <ul
                     class="nav col-12 col-md-auto mb-2 justify-content-center mb-md-0"
@@ -55,23 +41,11 @@
                     <li><a href="/add-course" class="nav-link px-2 link-dark">Add Course</a></li>
                 </ul>
             </header>
-            <hr/>
-            <h1>Course: {{$course->name}}</h1>
-            <button id='deleteCourseBtn' onclick='deleteCourse({{$course->id}})'>X</button>
-            <a href="/edit-course/{{$course->id}}"><button>Edit</button></a>
-            <a href="/test/{{$course->id}}"><button>Test</button></a>
-            <div class='container flex flex-row justify-content-around '>
-                <div>
-                    @foreach($words as $word)
-                        <p>Polish Word: {{$word->polish}}</p>
-                    @endforeach
-                </div>
-                <div>
-                    @foreach($words as $word)
-                        <p>English Word: {{$word->english}}</p>
-                    @endforeach
-                </div>
-            </div>
+        </div>
+        <hr/>
+        <h1>Test: {{$course->name}}</h1>
+        <div id='app' class="mx-5">
+            <test-component course="{{$course}}" words="{{$words}}"><test-component>
         </div>
     </body>
 </html>

@@ -29,3 +29,4 @@ Route::get('/courses/{courseid}', [ShowController::class, 'course']);
 
 Route::get('/words', [ShowController::class, 'words']);
 
+Route::get('/test/{courseid}', [ShowController::class, 'test']);
