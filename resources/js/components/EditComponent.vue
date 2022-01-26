@@ -73,10 +73,10 @@ export default {
     },
     methods: {
         displayWordsInputs({ target }) {
-            this.polishWords.length = 0;
-            this.englishWords.length = 0;
-            this.polishWordsInputs.length = 0;
-            this.englishWordsInputs.length = 0;
+            this.polishWords = [];
+            this.englishWords = [];
+            this.polishWordsInputs = [];
+            this.englishWordsInputs = [];
 
             let wordsQuantity = target.value;
             wordsQuantity = wordsQuantity > 0 ? wordsQuantity : 1;
@@ -89,8 +89,8 @@ export default {
             }
         },
         readAllWords() {
-            this.polishWords.length = 0;
-            this.englishWords.length = 0;
+            this.polishWords = [];
+            this.englishWords = [];
 
             this.$refs.polishWordsInputs.forEach((input) => {
                 this.polishWords.push(input.$el.value);
@@ -102,8 +102,12 @@ export default {
         },
         submitForm() {
             const course = JSON.parse(this.course);
+            const words = JSON.parse(this.words);
             const courseData = {
                 name: this.$refs.courseNameInput.value,
+            };
+            const data = {
+                words: [],
             };
             axios
                 .patch(
@@ -111,48 +115,56 @@ export default {
                     courseData
                 )
                 .then((res) => {
-                    // const data = {
-                    //     words: [],
-                    // };
-                    // for (let i = 0; i < this.polishWords.length; i++) {
-                    //     data.words.push({
-                    //         polish: this.polishWords[i],
-                    //         english: this.englishWords[i],
-                    //     });
-                    // }
-                    // axios
-                    //     .post(`${window.location.origin}/api/words`, data)
-                    //     .then((res) => console.log(response))
-                    //     .catch((error) => console.log(error.response));
+                    words.forEach((item) =>
+                        axios
+                            .delete(
+                                `${window.location.origin}/api/words/${item.id}`
+                            )
+                            .then((res) => console.log(res))
+                            .catch((error) => console.log(error))
+                    );
                 })
-                .catch((error) =>
-                    error != undefined ? console.log(error.response) : null
-                )
+                .then((res) => {
+                    for (let i = 0; i < this.polishWords.length; i++) {
+                        data.words.push({
+                            polish: this.polishWords[i],
+                            english: this.englishWords[i],
+                        });
+                    }
+                    axios
+                        .post(`${window.location.origin}/api/words`, data)
+                        .then((res) => console.log(res))
+                        .catch((error) => console.log(error));
+                })
+                .catch((error) => console.log(error))
                 .then(() => (window.location.href = "/courses"));
         },
     },
     computed: {},
     created() {
         const wordsArray = JSON.parse(this.words);
+        if (wordsArray.length > 0)
+            wordsArray.forEach((word) => {
+                const polishWordInput = "";
+                this.polishWordsInputs.push(polishWordInput);
+                this.englishWordsInputs.push(polishWordInput);
 
-        wordsArray.forEach((word) => {
-            const polishWordInput = "";
-            this.polishWordsInputs.push(polishWordInput);
-            this.englishWordsInputs.push(polishWordInput);
-
-            this.polishWords.push(word.polish);
-            this.englishWords.push(word.english);
-        });
+                this.polishWords.push(word.polish);
+                this.englishWords.push(word.english);
+            });
     },
     mounted() {
         const wordsArray = JSON.parse(this.words);
         const course = JSON.parse(this.course);
-        this.$refs.polishWordsInputs.forEach(
-            (input, i) => (input.$el.value = this.polishWords[i])
-        );
-        this.$refs.englishWordsInputs.forEach(
-            (input, i) => (input.$el.value = this.englishWords[i])
-        );
+
+        if (this.$refs.polishWordsInputs !== undefined) {
+            this.$refs.polishWordsInputs.forEach(
+                (input, i) => (input.$el.value = this.polishWords[i])
+            );
+            this.$refs.englishWordsInputs.forEach(
+                (input, i) => (input.$el.value = this.englishWords[i])
+            );
+        }
         this.$refs.wordsQuantityInput.value = wordsArray.length;
         this.$refs.courseNameInput.value = course.name;
     },

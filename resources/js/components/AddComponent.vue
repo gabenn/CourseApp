@@ -74,10 +74,10 @@ export default {
             this.polishWordsInputs.forEach((word) => {});
             this.englishWordsInputs.forEach((word) => {});
 
-            this.polishWords.length = 0;
-            this.englishWords.length = 0;
-            this.polishWordsInputs.length = 0;
-            this.englishWordsInputs.length = 0;
+            this.polishWords = [];
+            this.englishWords = [];
+            this.polishWordsInputs = [];
+            this.englishWordsInputs = [];
 
             let wordsQuantity = target.value;
             wordsQuantity = wordsQuantity > 0 ? wordsQuantity : 1;
@@ -90,8 +90,8 @@ export default {
             }
         },
         readAllWords() {
-            this.polishWords.length = 0;
-            this.englishWords.length = 0;
+            this.polishWords = [];
+            this.englishWords = [];
 
             this.$refs.polishWordsInputs.forEach((input) => {
                 this.polishWords.push(input.$el.value);

@@ -57,7 +57,7 @@
             </header>
             <hr/>
             <h1>Edit Course: {{$course->name}}</h1>
-            <edit-component course={{$course}} words={{$words}}></edit-component>
+            <edit-component course="{{$course}}" words="{{$words}}"></edit-component>
         </div>
     </body>
 </html>
