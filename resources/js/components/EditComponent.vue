@@ -4,6 +4,14 @@
         action="/api/words"
         enctype="application/x-www-form-urlencoded"
     >
+        <ModalComponent
+            v-if="error"
+            :error="error"
+            :message="errorMessage"
+            :title="errorTitle"
+            @closeModal="closeModal"
+        >
+        </ModalComponent>
         <div>
             <label for="courseNameInput">Course Name </label>
             <input
@@ -57,10 +65,12 @@
 </template>
 <script>
 import WordInput from "./WordInputComponent";
+import ModalComponent from "./ModalComponent";
 
 export default {
     components: {
         WordInput,
+        ModalComponent,
     },
     props: ["course", "words"],
     data() {
@@ -69,16 +79,19 @@ export default {
             englishWordsInputs: [],
             polishWords: [],
             englishWords: [],
+            error: false,
+            errorTitle: "",
+            errorMessage: "",
         };
     },
     methods: {
-        displayWordsInputs({ target }) {
+        displayWordsInputs() {
             this.polishWords = [];
             this.englishWords = [];
             this.polishWordsInputs = [];
             this.englishWordsInputs = [];
 
-            let wordsQuantity = target.value;
+            let wordsQuantity = this.$refs.wordsQuantityInput.value;
             wordsQuantity = wordsQuantity > 0 ? wordsQuantity : 1;
             wordsQuantity = wordsQuantity < 20 ? wordsQuantity : 20;
 
@@ -102,40 +115,67 @@ export default {
         },
         submitForm() {
             this.readAllWords();
-            const course = JSON.parse(this.course);
-            const words = JSON.parse(this.words);
-            const courseData = {
-                name: this.$refs.courseNameInput.value,
-            };
-            const data = {
-                words: [],
-                course_id: course.id,
-            };
+            this.validate();
+            if (!this.error) {
+                const course = JSON.parse(this.course);
+                const words = JSON.parse(this.words);
+                const courseData = {
+                    name: this.$refs.courseNameInput.value,
+                };
+                const data = {
+                    words: [],
+                    course_id: course.id,
+                };
 
-            axios
-                .patch(`/api/courses/${course.id}`, courseData)
-                .then((res) => {
-                    words.forEach((item) =>
+                axios
+                    .patch(`/api/courses/${course.id}`, courseData)
+                    .then((res) => {
+                        words.forEach((item) =>
+                            axios
+                                .delete(`/api/words/${item.id}`)
+                                .then((res) => console.log(res))
+                                .catch((error) => console.log(error))
+                        );
+                    })
+                    .then((res) => {
+                        for (let i = 0; i < this.polishWords.length; i++) {
+                            data.words.push({
+                                polish: this.polishWords[i],
+                                english: this.englishWords[i],
+                            });
+                        }
                         axios
-                            .delete(`/api/words/${item.id}`)
+                            .post(`/api/words`, data)
                             .then((res) => console.log(res))
-                            .catch((error) => console.log(error))
-                    );
-                })
-                .then((res) => {
-                    for (let i = 0; i < this.polishWords.length; i++) {
-                        data.words.push({
-                            polish: this.polishWords[i],
-                            english: this.englishWords[i],
-                        });
-                    }
-                    axios
-                        .post(`/api/words`, data)
-                        .then((res) => console.log(res))
-                        .catch((error) => console.log(error));
-                })
-                .catch((error) => console.log(error))
-                .then(() => (window.location.href = "/courses"));
+                            .catch((error) => console.log(error));
+                    })
+                    .catch((error) => console.log(error))
+                    .then(() => (window.location.href = "/courses"));
+            }
+        },
+        validate() {
+            if (this.$refs.courseNameInput.value === "") {
+                this.error = true;
+                this.errorTitle = "Course Name Error";
+                this.errorMessage = "Course Name input is empty";
+            }
+            this.polishWords.forEach((word) => {
+                if (word === "") {
+                    this.error = true;
+                    this.errorTitle = "Words Error";
+                    this.errorMessage = "Fill All Inputs";
+                }
+            });
+            this.englishWords.forEach((word) => {
+                if (word === "") {
+                    this.error = true;
+                    this.errorTitle = "Words Error";
+                    this.errorMessage = "Fill All Inputs";
+                }
+            });
+        },
+        closeModal() {
+            this.error = false;
         },
     },
     created() {

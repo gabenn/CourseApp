@@ -1,6 +1,14 @@
 <template>
     <div class="flex flex-column">
         <div v-if="test">
+            <ModalComponent
+                v-if="error"
+                :error="error"
+                :message="errorMessage"
+                :title="errorTitle"
+                @closeModal="closeModal"
+            >
+            </ModalComponent>
             <div>
                 <h3>Word {{ this.activeWord }}/{{ this.wordsArray.length }}</h3>
             </div>
@@ -42,7 +50,12 @@
     </div>
 </template>
 <script>
+import ModalComponent from "./ModalComponent";
+
 export default {
+    components: {
+        ModalComponent,
+    },
     props: ["course", "words"],
     data() {
         return {
@@ -50,21 +63,27 @@ export default {
             activeWord: 1,
             wordsArray: [],
             test: true,
+            error: false,
+            errorTitle: "",
+            errorMessage: "",
         };
     },
     methods: {
         confirm() {
-            if (
-                this.$refs.answerInput.value ===
-                this.wordsArray[this.activeWord - 1].english
-            ) {
-                this.goodAnswers++;
-                this.$refs.answerInput.value = "";
-                this.$refs.answerInput.focus();
-            }
-            if (this.activeWord < this.wordsArray.length) this.activeWord++;
-            else {
-                this.test = false;
+            this.validate();
+            if (!this.error) {
+                if (
+                    this.$refs.answerInput.value ===
+                    this.wordsArray[this.activeWord - 1].english
+                ) {
+                    this.goodAnswers++;
+                    this.$refs.answerInput.value = "";
+                    this.$refs.answerInput.focus();
+                }
+                if (this.activeWord < this.wordsArray.length) this.activeWord++;
+                else {
+                    this.test = false;
+                }
             }
         },
         goBack() {
@@ -72,6 +91,16 @@ export default {
             window.location.href = `/courses/${course.id}}`;
         },
         reRun: () => document.location.reload(),
+        validate() {
+            if (this.$refs.answerInput.value === "") {
+                this.error = true;
+                this.errorTitle = "Answer Input Error";
+                this.errorMessage = "Answer input is empty";
+            }
+        },
+        closeModal() {
+            this.error = false;
+        },
     },
     created() {
         this.wordsArray = JSON.parse(this.words);
