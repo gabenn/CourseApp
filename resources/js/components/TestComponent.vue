@@ -1,26 +1,43 @@
 <template>
     <div class="flex flex-column">
-        <div>
-            <h3>Word {{ this.activeWord }}/{{ this.wordsArray.length }}</h3>
-        </div>
-        <div class="flex justify-content-center">
+        <div v-if="test">
             <div>
-                <p class="form-control">
-                    Polish Word:
-                    {{ this.wordsArray[this.activeWord - 1].polish }}
-                </p>
+                <h3>Word {{ this.activeWord }}/{{ this.wordsArray.length }}</h3>
             </div>
-            <div>
-                <input
-                    type="text"
-                    class="form-control"
-                    placeholder="English Word"
-                    ref="answerInput"
-                />
+            <div class="flex justify-content-center">
+                <div>
+                    <p class="form-control">
+                        Polish Word:
+                        {{ this.wordsArray[this.activeWord - 1].polish }}
+                    </p>
+                </div>
+                <div>
+                    <input
+                        type="text"
+                        class="form-control"
+                        placeholder="English Word"
+                        ref="answerInput"
+                    />
+                </div>
+            </div>
+            <div class="flex justify-content-center">
+                <button class="btn btn-primary" @click="confirm">
+                    Confirm
+                </button>
             </div>
         </div>
-        <div class="flex justify-content-center">
-            <button class="btn btn-primary" @click="confirm">Confirm</button>
+        <div v-else class="flex flex-column justify-content-center">
+            <div class="h3 m-3 flex justify-content-center">
+                Score: {{ this.goodAnswers }}/{{ this.wordsArray.length }}
+            </div>
+            <div class="h3 m-3 flex justify-content-center">
+                <button class="btn btn-success m-3" @click="goBack">
+                    Go Back
+                </button>
+                <button class="btn btn-success m-3" @click="reRun">
+                    Re-Run
+                </button>
+            </div>
         </div>
     </div>
 </template>
@@ -32,6 +49,7 @@ export default {
             goodAnswers: 0,
             activeWord: 1,
             wordsArray: [],
+            test: true,
         };
     },
     methods: {
@@ -46,8 +64,14 @@ export default {
             }
             if (this.activeWord < this.wordsArray.length) this.activeWord++;
             else {
+                this.test = false;
             }
         },
+        goBack() {
+            const course = JSON.parse(this.course);
+            window.location.href = `/courses/${course.id}}`;
+        },
+        reRun: () => document.location.reload(),
     },
     created() {
         this.wordsArray = JSON.parse(this.words);
