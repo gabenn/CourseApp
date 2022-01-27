@@ -4,6 +4,14 @@
         action="/api/words"
         enctype="application/x-www-form-urlencoded"
     >
+        <ModalComponent
+            v-if="error"
+            :error="error"
+            :message="errorMessage"
+            :title="errorTitle"
+            @closeModal="closeModal"
+        >
+        </ModalComponent>
         <div>
             <label for="courseNameInput">Course Name </label>
             <input
@@ -22,6 +30,7 @@
                 type="number"
                 id="wordsQuantityInput"
                 placeholder="0"
+                ref="wordsQuantityInput"
                 @change="displayWordsInputs"
                 class="form-control"
             />
@@ -56,10 +65,12 @@
 </template>
 <script>
 import WordInput from "./WordInputComponent";
+import ModalComponent from "./ModalComponent";
 
 export default {
     components: {
         WordInput,
+        ModalComponent,
     },
     data() {
         return {
@@ -67,10 +78,13 @@ export default {
             englishWordsInputs: [],
             polishWords: [],
             englishWords: [],
+            error: false,
+            errorTitle: "",
+            errorMessage: "",
         };
     },
     methods: {
-        displayWordsInputs({ target }) {
+        displayWordsInputs() {
             this.polishWordsInputs.forEach((word) => {});
             this.englishWordsInputs.forEach((word) => {});
 
@@ -79,7 +93,7 @@ export default {
             this.polishWordsInputs = [];
             this.englishWordsInputs = [];
 
-            let wordsQuantity = target.value;
+            let wordsQuantity = this.$refs.wordsQuantityInput.value;
             wordsQuantity = wordsQuantity > 0 ? wordsQuantity : 1;
             wordsQuantity = wordsQuantity < 20 ? wordsQuantity : 20;
 
@@ -93,42 +107,75 @@ export default {
             this.polishWords = [];
             this.englishWords = [];
 
-            this.$refs.polishWordsInputs.forEach((input) => {
-                this.polishWords.push(input.$el.value);
-            });
+            this.$refs.polishWordsInputs.forEach((input) =>
+                this.polishWords.push(input.$el.value)
+            );
 
             this.$refs.englishWordsInputs.forEach((input) =>
                 this.englishWords.push(input.$el.value)
             );
         },
+        validate() {
+            if (this.$refs.courseNameInput.value === "") {
+                this.error = true;
+                this.errorTitle = "Course Name Error";
+                this.errorMessage = "Course Name input is empty";
+            }
+            this.polishWords.forEach((word) => {
+                console.log("pl", word);
+                if (word === "") {
+                    this.error = true;
+                    this.errorTitle = "Words Error";
+                    this.errorMessage = "Fill All Inputs";
+                }
+            });
+            this.englishWords.forEach((word) => {
+                console.log("eng", word);
+                if (word === "") {
+                    this.error = true;
+                    this.errorTitle = "Words Error";
+                    this.errorMessage = "Fill All Inputs";
+                }
+            });
+        },
         submitForm() {
-            const courseData = {
-                name: this.$refs.courseNameInput.value,
-            };
-            axios
-                .post(`${window.location.origin}/api/courses`, courseData)
-                .then((res) => {
-                    const data = {
-                        words: [],
-                        course_id: 0,
-                    };
-                    for (let i = 0; i < this.polishWords.length; i++) {
-                        data.words.push({
-                            polish: this.polishWords[i],
-                            english: this.englishWords[i],
-                        });
-                    }
-                    axios
-                        .post(`${window.location.origin}/api/words`, data)
-                        .then((res) => console.log(response))
-                        .catch((error) => console.log(error.response));
-                })
-                .catch((error) =>
-                    error != undefined ? console.log(error.response) : null
-                )
-                .then(() => (window.location.href = "/courses"));
+            this.validate();
+            if (!this.error) {
+                const courseData = {
+                    name: this.$refs.courseNameInput.value,
+                };
+                axios
+                    .post(`${window.location.origin}/api/courses`, courseData)
+                    .then((res) => {
+                        const data = {
+                            words: [],
+                            course_id: 0,
+                        };
+                        for (let i = 0; i < this.polishWords.length; i++) {
+                            data.words.push({
+                                polish: this.polishWords[i],
+                                english: this.englishWords[i],
+                            });
+                        }
+                        axios
+                            .post(`${window.location.origin}/api/words`, data)
+                            .then((res) => console.log(response))
+                            .catch((error) => console.log(error.response));
+                    })
+                    .catch((error) =>
+                        error != undefined ? console.log(error.response) : null
+                    )
+                    .then(() => (window.location.href = "/courses"));
+            }
+        },
+        closeModal() {
+            this.error = false;
         },
     },
     computed: {},
+    mounted() {
+        this.$refs.wordsQuantityInput.value = 1;
+        this.displayWordsInputs();
+    },
 };
 </script>
