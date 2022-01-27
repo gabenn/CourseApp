@@ -25,7 +25,7 @@
         </script>
     </head>
     <body class="antialiased">
-        <div id='app'>
+        <div id='app'>            
             <header class="d-flex justify-content-center py-3">
                 <ul
                     class="nav col-12 col-md-auto mb-2 justify-content-center mb-md-0"
@@ -43,19 +43,27 @@
                 </ul>
             </header>
             <hr/>
-            <h1>Words</h1>
-            <div class='container flex flex-wrap justify-content-around'>
-                <div>
-                    @foreach($words as $word)
-                        <h4>Polish Word: {{$word->polish}}</h4>
-                    @endforeach
-                </div>
-                <div>
-                    @foreach($words as $word)
-                        <h4>English Word: {{$word->english}}</h4>
-                    @endforeach
-                </div>
+            <div class="px-3 py-3 pt-md-5 pb-md-4 mx-auto text-center">
+                <h1 class="display-4 text-capitalize">Words</h1>
             </div>
+            <div class='container flex flex-row md-justify-content-center justify-content-around '>
+                <ul class="list-group">
+                    <li class="list-group-item m-p-1">Polish Words</li>
+                    @foreach($words as $word)
+                        <li class="list-group-item m-p-1 text-capitalize">{{$loop->iteration.": ".$word->polish}}</li>
+                    @endforeach
+                </ul>
+                <ul class="list-group">
+                    <li class="list-group-item m-p-1">English Words</li>
+                    @foreach($words as $word)
+                        <li class="list-group-item m-p-1 text-capitalize">{{$loop->iteration.": ".$word->english}}</li>
+                    @endforeach
+                </ul>
+            </div>
+            <hr/>
+            <footer class="my-5 pt-5 text-muted text-center text-small">
+                <p class="mb-1">© 2022 Łukasz Cysewski</p>
+            </footer>
         </div>
     </body>
 </html>

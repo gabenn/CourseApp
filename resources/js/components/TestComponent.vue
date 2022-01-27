@@ -15,7 +15,6 @@
             <div class="flex justify-content-center">
                 <div>
                     <p class="form-control">
-                        Polish Word:
                         {{ this.wordsArray[this.activeWord - 1].polish }}
                     </p>
                 </div>
@@ -80,8 +79,11 @@ export default {
                     this.$refs.answerInput.value = "";
                     this.$refs.answerInput.focus();
                 }
-                if (this.activeWord < this.wordsArray.length) this.activeWord++;
-                else {
+                if (this.activeWord < this.wordsArray.length) {
+                    this.activeWord++;
+                    this.$refs.answerInput.value = "";
+                    this.$refs.answerInput.focus();
+                } else {
                     this.test = false;
                 }
             }

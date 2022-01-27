@@ -43,9 +43,14 @@
             </header>
         </div>
         <hr/>
-        <h1>Add Course</h1>
-        <div id='app' class="d-flex justify-content-center">
+        <div class="px-3 py-3 pt-md-5 pb-md-4 mx-auto text-center">
+            <h1 class="display-4 text-capitalize">Add Course</h1>
+        </div>
+        <div id='app' class='flex justify-content-center px-3 py-3 pt-md-5 pb-md-4 mx-auto text-center'>
             <add-component></add-component>
         </div>
+        <footer class="my-5 pt-5 text-muted text-center text-small">
+            <p class="mb-1">© 2022 Łukasz Cysewski</p>
+        </footer>
     </body>
 </html>

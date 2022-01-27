@@ -43,9 +43,14 @@
             </header>
         </div>
         <hr/>
-        <h1>Test: {{$course->name}}</h1>
+        <div class="px-3 py-3 pt-md-5 pb-md-4 mx-auto text-center">
+            <h1 class="display-4 text-capitalize">{{$course->name}}</h1>
+        </div>
         <div id='app' class="mx-5">
             <test-component course="{{$course}}" words="{{$words}}"><test-component>
         </div>
+        <footer class="my-5 pt-5 text-muted text-center text-small">
+            <p class="mb-1">© 2022 Łukasz Cysewski</p>
+        </footer>
     </body>
 </html>

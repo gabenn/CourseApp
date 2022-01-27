@@ -1,9 +1,5 @@
 <template>
-    <form
-        method="POST"
-        action="/api/words"
-        enctype="application/x-www-form-urlencoded"
-    >
+    <div>
         <ModalComponent
             v-if="error"
             :error="error"
@@ -30,7 +26,7 @@
                 type="number"
                 id="wordsQuantityInput"
                 ref="wordsQuantityInput"
-                placeholder="0"
+                placeholder="Words Quantity"
                 @change="displayWordsInputs"
                 class="form-control"
             />
@@ -61,7 +57,7 @@
             value="Edit Course"
             class="btn btn-primary"
         />
-    </form>
+    </div>
 </template>
 <script>
 import WordInput from "./WordInputComponent";

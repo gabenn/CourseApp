@@ -43,17 +43,22 @@
                 </ul>
             </header>
             <hr/>
-            <h1>Created Courses</h1>
+            <div class="px-3 py-3 pt-md-5 pb-md-4 mx-auto text-center">
+                <h1 class="display-4 text-capitalize">Courses</h1>
+            </div>
             <div class='container flex flex-wrap '>
             @foreach($courses as $course)
                 <a href={{"/courses/".$course->id}}>
                     <article class="border p-3">
-                        <h3>{{$course->name}}</h3>
+                        <h3 class='text-capitalize'>{{$course->name}}</h3>
                         <p>Created At: {{$course->created_at}}</p>
                     </article>
                 </a>
             @endforeach
             </div>
+            <footer class="my-5 pt-5 text-muted text-center text-small">
+                <p class="mb-1">© 2022 Łukasz Cysewski</p>
+            </footer>
         </div>
     </body>
 </html>

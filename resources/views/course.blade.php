@@ -56,10 +56,16 @@
                 </ul>
             </header>
             <hr/>
-            <h1>Course: {{$course->name}}</h1>
-            <button id='deleteCourseBtn' onclick='deleteCourse({{$course->id}})'>X</button>
-            <a href="/edit-course/{{$course->id}}"><button>Edit</button></a>
-            <a href="/test/{{$course->id}}"><button>Test</button></a>
+            <div class="px-3 py-3 pt-md-5 pb-md-4 mx-auto text-center">
+                <h1 class="display-4 text-capitalize">{{$course->name}}</h1>
+            </div>
+            <hr/>
+            <div class='flex justify-content-center'>
+                <a href="/edit-course/{{$course->id}}"><button class='btn btn-primary m-2'>Edit</button></a>
+                <a href="/test/{{$course->id}}"><button class='btn btn-primary m-2'>Test</button></a>
+                <button id='deleteCourseBtn' onclick='deleteCourse({{$course->id}})' class='btn btn-danger m-2'>Delete</button>
+            </div>
+            <hr/>
             <div class='container flex flex-row justify-content-around '>
                 <div>
                     @foreach($words as $word)
@@ -72,6 +78,9 @@
                     @endforeach
                 </div>
             </div>
+            <footer class="my-5 pt-5 text-muted text-center text-small">
+                <p class="mb-1">© 2022 Łukasz Cysewski</p>
+            </footer>
         </div>
     </body>
 </html>
