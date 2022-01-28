@@ -10,12 +10,12 @@
             >
             </ModalComponent>
             <div>
-                <h3>Word {{ this.activeWord }}/{{ this.wordsArray.length }}</h3>
+                <h3>Word {{ activeWord }}/{{ wordsArray.length }}</h3>
             </div>
             <div class="flex justify-content-center">
                 <div>
                     <p class="form-control">
-                        {{ this.wordsArray[this.activeWord - 1].polish }}
+                        {{ wordsArray[activeWord - 1].polish }}
                     </p>
                 </div>
                 <div>
@@ -45,6 +45,20 @@
                     Re-Run
                 </button>
             </div>
+            <div class="h3 m-3 flex justify-content-around">
+                <ul class="list-group">
+                    <li
+                        v-for="(answer, index) in answers"
+                        :class="
+                            wordsArray[index].english == answer
+                                ? 'list-group-item border border-success text-success my-2'
+                                : 'list-group-item border border-danger text-danger my-2'
+                        "
+                    >
+                        {{ `${wordsArray[index].polish} - ${answer}` }}
+                    </li>
+                </ul>
+            </div>
         </div>
     </div>
 </template>
@@ -61,6 +75,7 @@ export default {
             goodAnswers: 0,
             activeWord: 1,
             wordsArray: [],
+            answers: [],
             test: true,
             error: false,
             errorTitle: "",
@@ -71,6 +86,7 @@ export default {
         confirm() {
             this.validate();
             if (!this.error) {
+                this.answers.push(this.$refs.answerInput.value);
                 if (
                     this.$refs.answerInput.value ===
                     this.wordsArray[this.activeWord - 1].english
