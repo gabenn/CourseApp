@@ -119,7 +119,7 @@ export default {
         },
         goBack() {
             const course = JSON.parse(this.course);
-            window.location.href = `/courses/${course.id}}`;
+            window.location.href = `/courses/${course.id}`;
         },
         reRun: () => document.location.reload(),
         validate() {
