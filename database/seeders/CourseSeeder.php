@@ -14,9 +14,7 @@ class CourseSeeder extends Seeder
      */
     public function run()
     {
-        for($i = 0;$i < 4;$i++){
-            Course::create(['name'=>Str::random(10)]);
-        }
         Course::create(['name'=>'animals']);
+        Course::create(['name'=>'professions']);
     }
 }

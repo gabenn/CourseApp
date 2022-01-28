@@ -16,13 +16,28 @@ class WordSeeder extends Seeder
      */
     public function run()
     {
-        Word::create(['course_id'=>5,'polish'=>'pies','english'=>'dog']);
-        Word::create(['course_id'=>5,'polish'=>'kot','english'=>'cat']);
-        Word::create(['course_id'=>5,'polish'=>'kon','english'=>'horse']);
-        Word::create(['course_id'=>5,'polish'=>'krolik','english'=>'rabbit']);
-        Word::create(['course_id'=>5,'polish'=>'krowa','english'=>'cow']);
-        foreach(Course::all() as $course)
-            for($i = 0; $i < 8; $i++)
-                Word::create(['course_id'=>$course->id,'polish'=>Str::random(6),'english'=>Str::random(6)]);
+
+        $animals = [
+            ['course_id'=>1,'polish'=>'pies','english'=>'dog'],
+            ['course_id'=>1,'polish'=>'kot','english'=>'cat'],
+            ['course_id'=>1,'polish'=>'koń','english'=>'horse'],
+            ['course_id'=>1,'polish'=>'królik','english'=>'rabbit'],
+            ['course_id'=>1,'polish'=>'krowa','english'=>'cow'],
+            ['course_id'=>1,'polish'=>'wiewiórka','english'=>'squirrel'],
+            ['course_id'=>1,'polish'=>'niedźwiedź','english'=>'bear'],
+            ['course_id'=>1,'polish'=>'wąż','english'=>'snake'],
+        ];
+        Word::insert($animals);
+
+        $professions = [
+            ['course_id'=>2,'polish'=>'górnik','english'=>'miner'],
+            ['course_id'=>2,'polish'=>'mechanik','english'=>'mechanic'],
+            ['course_id'=>2,'polish'=>'inżynier','english'=>'engineer'],
+            ['course_id'=>2,'polish'=>'piekarz','english'=>'baker'],
+            ['course_id'=>2,'polish'=>'policjant','english'=>'policeman'],
+            ['course_id'=>2,'polish'=>'nauczyciel','english'=>'teacher'],
+            ['course_id'=>2,'polish'=>'sędzia','english'=>'judge']
+        ];
+        Word::insert($professions);
     }
 }
