@@ -1,36 +1,47 @@
 <template>
     <div class="flex flex-column">
         <div v-if="test">
-            <ModalComponent
-                v-if="error"
-                :error="error"
-                :message="errorMessage"
-                :title="errorTitle"
-                @closeModal="closeModal"
-            >
-            </ModalComponent>
-            <div>
-                <h3>Word {{ activeWord }}/{{ wordsArray.length }}</h3>
-            </div>
-            <div class="flex justify-content-center">
+            <div v-if="!cheat">
+                <ModalComponent
+                    v-if="error"
+                    :error="error"
+                    :message="errorMessage"
+                    :title="errorTitle"
+                    @closeModal="closeModal"
+                >
+                </ModalComponent>
                 <div>
-                    <p class="form-control">
-                        {{ wordsArray[activeWord - 1].polish }}
-                    </p>
+                    <h3>Word {{ activeWord }}/{{ wordsArray.length }}</h3>
                 </div>
-                <div>
-                    <input
-                        type="text"
-                        class="form-control"
-                        placeholder="English Word"
-                        ref="answerInput"
-                    />
+                <div class="flex justify-content-center">
+                    <div>
+                        <p class="form-control">
+                            {{ wordsArray[activeWord - 1].polish }}
+                        </p>
+                    </div>
+                    <div>
+                        <input
+                            type="text"
+                            class="form-control"
+                            placeholder="English Word"
+                            ref="answerInput"
+                        />
+                    </div>
+                </div>
+                <div class="flex justify-content-center">
+                    <button class="btn btn-primary" @click="confirm">
+                        Confirm
+                    </button>
                 </div>
             </div>
-            <div class="flex justify-content-center">
-                <button class="btn btn-primary" @click="confirm">
-                    Confirm
-                </button>
+            <div v-else>
+                <ModalComponent
+                    v-if="cheat"
+                    :error="cheat"
+                    :message="'Cheating detected. Refresh page to start test again'"
+                    :title="'Cheating'"
+                    @closeModal="closeModal"
+                ></ModalComponent>
             </div>
         </div>
         <div v-else class="flex flex-column justify-content-center">
@@ -55,11 +66,12 @@
                                 : 'list-group-item border border-danger text-danger my-2'
                         "
                     >
-                        {{ `${wordsArray[index].polish} - ${answer}` }}
+                        {{ `${wordsArray[index].polish} - ${answer}`}}
                     </li>
                 </ul>
             </div>
         </div>
+    </div>
     </div>
 </template>
 <script>
@@ -80,6 +92,7 @@ export default {
             error: false,
             errorTitle: "",
             errorMessage: "",
+            cheat: false,
         };
     },
     methods: {
@@ -122,6 +135,12 @@ export default {
     },
     created() {
         this.wordsArray = JSON.parse(this.words);
+        const cheaterInterval = window.setInterval(() => {
+            if (!document.hasFocus() && !this.cheat) {
+                this.cheat = true;
+                window.clearInterval(cheaterInterval);
+            }
+        }, 1000);
     },
 };
 </script>
