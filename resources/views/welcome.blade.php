@@ -5,7 +5,8 @@
         <meta name="viewport" content="width=device-width, initial-scale=1">
 
         <title>Laravel</title>
-
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/css/bootstrap.min.css" integrity="sha384-TX8t27EcRE3e/ihU7zmQxVncDAy5uIKz4rEkgIXeMed4M0jlfIDPvg6uqKI2xXr2" crossorigin="anonymous">
+        
         <!-- Fonts -->
         <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700&display=swap" rel="stylesheet">
 
@@ -25,7 +26,23 @@
     </head>
     <body class="antialiased">
         <div id='app'>
-            <test-component></test-component>
+            <div class="container">
+                <header class="d-flex justify-content-center py-3">
+                    <ul
+                        class="nav col-12 col-md-auto mb-2 justify-content-center mb-md-0"
+                    >
+                        <li>
+                            <a href="/" class="nav-link px-2 link-secondary">Home</a>
+                        </li>
+                        <li>
+                            <a href="/courses" class="nav-link px-2 link-dark">Courses</a>
+                        </li>
+                        <li>
+                            <a href="/words" class="nav-link px-2 link-dark">Words</a>
+                        </li>
+                        <li><a href="/add-course" class="nav-link px-2 link-dark">Add Course</a></li>
+                    </ul>
+                </header>
         </div>
     </body>
 </html>

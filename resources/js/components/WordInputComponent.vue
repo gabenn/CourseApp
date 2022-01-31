@@ -1,5 +1,10 @@
 <template>
-    <input type="text" :placeholder="plholder" @input="$emit('read')" />
+    <input
+        type="text"
+        :placeholder="plholder"
+        @input="$emit('read')"
+        class="form-control"
+    />
 </template>
 <script>
 export default {

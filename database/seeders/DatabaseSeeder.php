@@ -3,6 +3,8 @@
 namespace Database\Seeders;
 
 use Illuminate\Database\Seeder;
+use Database\Seeders\CourseSeeder;
+use Database\Seeders\WordSeeder;
 
 class DatabaseSeeder extends Seeder
 {
@@ -13,6 +15,9 @@ class DatabaseSeeder extends Seeder
      */
     public function run()
     {
-        // \App\Models\User::factory(10)->create();
+        $this->call([
+            CourseSeeder::class,
+            WordSeeder::class,
+        ]);        
     }
 }
