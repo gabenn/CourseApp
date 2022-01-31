@@ -66,6 +66,14 @@
                 <button id='deleteCourseBtn' onclick='deleteCourse({{$course->id}})' class='btn btn-danger m-2'>Delete</button>
             </div>
             <hr/>
+            <p class='text-center'>
+                <?php
+
+                ?>
+                Max test time: {{
+                    count($words)*30 >= 60 ? ((floor(count($words)*30/60))." minutes ".((count($words)*30)%60)." seconds") : ((count($words)*30)." seconds")
+                    }}
+            </p>
             <div class='container flex flex-row justify-content-around '>
                 <div>
                     @foreach($words as $word)
