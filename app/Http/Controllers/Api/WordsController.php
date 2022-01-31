@@ -7,7 +7,6 @@ use App\Http\Resources\WordResource;
 use App\Http\Requests\WordRequest;
 use App\Models\Word;
 use Illuminate\Http\Request;
-use App\Models\Course;
 
 class WordsController extends Controller
 {
@@ -29,9 +28,11 @@ class WordsController extends Controller
      */
     public function store(WordRequest $request)
     {
-        $course = $request-> course_id==0 ? Course::latest()->first() : Course::find($request->course_id);       
+        $word = Word::create($request->validated());
 
-        return $course->words()->createMany($request->words);
+        return new WordResource($word);
+        // return $request;
+
     }
 
     /**
