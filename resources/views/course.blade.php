@@ -4,8 +4,10 @@
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <meta name="csrf-token" content="{{ csrf_token() }}" />
+
         <title>Laravel</title>
         <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/css/bootstrap.min.css" integrity="sha384-TX8t27EcRE3e/ihU7zmQxVncDAy5uIKz4rEkgIXeMed4M0jlfIDPvg6uqKI2xXr2" crossorigin="anonymous">
+        
         <!-- Fonts -->
         <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700&display=swap" rel="stylesheet">
 
@@ -22,9 +24,21 @@
         <script src="{{mix('js/app.js')}}" defer>
 
         </script>
+        <script defer>
+            
+            const deleteCourse = courseId => { 
+                console.log(courseId)
+                axios.delete(`${window.location.origin}/api/courses/${courseId}`)
+                .then((res) => {
+                    console.log(res);
+                    window.location.href = "/courses"
+                })
+                .catch(err=>console.log(err))
+            }
+        </script>
     </head>
     <body class="antialiased">
-        <div class="container">
+        <div id='app'>
             <header class="d-flex justify-content-center py-3">
                 <ul
                     class="nav col-12 col-md-auto mb-2 justify-content-center mb-md-0"
@@ -41,16 +55,32 @@
                     <li><a href="/add-course" class="nav-link px-2 link-dark">Add Course</a></li>
                 </ul>
             </header>
+            <hr/>
+            <div class="px-3 py-3 pt-md-5 pb-md-4 mx-auto text-center">
+                <h1 class="display-4 text-capitalize">{{$course->name}}</h1>
+            </div>
+            <hr/>
+            <div class='flex justify-content-center'>
+                <a href="/edit-course/{{$course->id}}"><button class='btn btn-primary m-2'>Edit</button></a>
+                <a href="/test/{{$course->id}}"><button class='btn btn-primary m-2'>Test</button></a>
+                <button id='deleteCourseBtn' onclick='deleteCourse({{$course->id}})' class='btn btn-danger m-2'>Delete</button>
+            </div>
+            <hr/>
+            <div class='container flex flex-row justify-content-around '>
+                <div>
+                    @foreach($words as $word)
+                        <p>Polish Word: {{$word->polish}}</p>
+                    @endforeach
+                </div>
+                <div>
+                    @foreach($words as $word)
+                        <p>English Word: {{$word->english}}</p>
+                    @endforeach
+                </div>
+            </div>
+            <footer class="my-5 pt-5 text-muted text-center text-small">
+                <p class="mb-1">© 2022 Łukasz Cysewski</p>
+            </footer>
         </div>
-        <hr/>
-        <div class="px-3 py-3 pt-md-5 pb-md-4 mx-auto text-center">
-            <h1 class="display-4 text-capitalize">Add Course</h1>
-        </div>
-        <div id='app' class='flex justify-content-center px-3 py-3 pt-md-5 pb-md-4 mx-auto text-center'>
-            <add-component></add-component>
-        </div>
-        <footer class="my-5 pt-5 text-muted text-center text-small">
-            <p class="mb-1">© 2022 Łukasz Cysewski</p>
-        </footer>
     </body>
 </html>
