@@ -23,6 +23,17 @@
         <script src="{{mix('js/app.js')}}" defer>
 
         </script>
+        <!-- PWA  -->
+        <meta name="theme-color" content="#6777ef"/>
+        <link rel="manifest" href="{{ asset('/manifest.json') }}">
+        <script src="{{ asset('/sw.js') }}" defer></script>
+        <script defer> if ('serviceWorker' in navigator) {
+            navigator.serviceWorker.register('./sw.js').then(function(reg) {
+                console.log('Successfully registered service worker', reg);
+            }).catch(function(err) {
+                console.warn('Error whilst registering service worker', err);
+            });
+            }</script>
     </head>
     <body class="antialiased">
         <div id='app'>
