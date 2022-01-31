@@ -112,10 +112,20 @@ export default {
             );
         },
         validate() {
+            console.log(this.polishWords);
+            console.log(this.englishWords);
             if (this.$refs.courseNameInput.value === "") {
                 this.error = true;
                 this.errorTitle = "Course Name Error";
                 this.errorMessage = "Course Name input is empty";
+            }
+            if (
+                this.polishWords.length === 0 ||
+                this.englishWords.length === 0
+            ) {
+                this.error = true;
+                this.errorTitle = "Words Error";
+                this.errorMessage = "Create Some Words";
             }
             this.polishWords.forEach((word) => {
                 console.log("pl", word);
