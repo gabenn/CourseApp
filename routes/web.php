@@ -22,3 +22,11 @@ Route::get('/', function () {
 Route::get('/edit-course/{courseid}', [ShowController::class, 'edit']);
 
 Route::get('/add-course', [ShowController::class, 'add']);
+
+Route::get('/courses', [ShowController::class, 'courses']);
+
+Route::get('/courses/{courseid}', [ShowController::class, 'course']);
+
+Route::get('/words', [ShowController::class, 'words']);
+
+Route::get('/test/{courseid}', [ShowController::class, 'test']);
