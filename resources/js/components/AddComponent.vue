@@ -14,7 +14,6 @@
                 class="form-control"
                 type="text"
                 placeholder="Course Name"
-                id="courseNameInput"
                 ref="courseNameInput"
             />
         </div>
@@ -24,7 +23,6 @@
                 min="1"
                 max="20"
                 type="number"
-                id="wordsQuantityInput"
                 ref="wordsQuantityInput"
                 placeholder="Words Quantity"
                 @change="displayWordsInputs"
@@ -32,7 +30,7 @@
             />
         </div>
         <div id="wordsBox" class="flex flex-row mt-5 mb-5">
-            <ol class="flex flex-column" id="polishWordsBox">
+            <ol class="flex flex-column">
                 <li v-for="input in polishWordsInputs">
                     <WordInput
                         v-bind:placeholderText="`Polish Word`"
@@ -41,7 +39,7 @@
                     ></WordInput>
                 </li>
             </ol>
-            <ol class="flex flex-column" id="englishWordsBox">
+            <ol class="flex flex-column">
                 <li v-for="input in englishWordsInputs">
                     <WordInput
                         v-bind:placeholderText="`English Word`"
@@ -81,9 +79,6 @@ export default {
     },
     methods: {
         displayWordsInputs() {
-            this.polishWordsInputs.forEach((word) => {});
-            this.englishWordsInputs.forEach((word) => {});
-
             this.polishWords = [];
             this.englishWords = [];
             this.polishWordsInputs = [];

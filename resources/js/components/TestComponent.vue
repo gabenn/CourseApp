@@ -12,9 +12,9 @@
                 </ModalComponent>
                 <div>
                     <h3>Word {{ activeWord }}/{{ wordsArray.length }}</h3>
-                    <h5>Max Time: {{wordsArray.length*30 >= 60 
-                    ? ((Math.floor(wordsArray.length*30/60))+" minutes "+((wordsArray.length*30)%60)+" seconds") 
-                    : ((wordsArray.length*30)+" seconds")}}</h5>
+                    <h5>Max Time: {{testMaxTime >= 60 
+                    ? ((Math.floor(testMaxTime/60))+" minutes "+(testMaxTime%60)+" seconds") 
+                    : (testMaxTime+" seconds")}}</h5>
                 </div>
                 <div class="flex justify-content-center">
                     <div>
@@ -57,8 +57,6 @@
                 </p>
                 <p>Your Score: {{ this.goodAnswers }}/{{ this.wordsArray.length }}</p>
                 <p>Your Time: {{this.testTotalTime}}seconds</p>
-                
-
             </div>
             <div class="h3 m-3 flex justify-content-center">
                 <button class="btn btn-success m-3" @click="goBack">
@@ -108,6 +106,7 @@ export default {
             testStartTime: 0,
             testEndTime: 0,
             testTotalTime:0,
+            testMaxTime:0,
             pass: false,
         };
     },
@@ -132,12 +131,12 @@ export default {
                     this.test = false;
                     this.testEndTime = new Date();
                     this.testTotalTime = (this.testEndTime.getTime() - this.testStartTime.getTime())/1000
-                    if(this.goodAnswers/this.activeWord > 0.5 && this.testTotalTime < this.activeWord*30) this.pass = true
+                    if(this.goodAnswers/this.activeWord > 0.5 && this.testTotalTime < this.testMaxTime) this.pass = true
                     else {
                         this.pass = false
-                        if(this.goodAnswers/this.activeWord < 0.5 && this.testTotalTime > this.activeWord*30) this.errorMessage = 'Score < 50% And Time > Max Test Time'
+                        if(this.goodAnswers/this.activeWord < 0.5 && this.testTotalTime > this.testMaxTime) this.errorMessage = 'Score < 50% And Time > Max Test Time'
                         else if(this.goodAnswers/this.activeWord < 0.5) this.errorMessage = "Score < 50%"
-                        else if(this.testTotalTime > this.activeWord*30) this.errorMessage = "Time > Max Test Time"
+                        else if(this.testTotalTime > this.testMaxTime) this.errorMessage = "Time > Max Test Time"
                     }
                 }
             }
@@ -166,6 +165,8 @@ export default {
                 window.clearInterval(cheaterInterval);
             }
         }, 1000);
+        
+        this.testMaxTime = this.wordsArray.length * 30;
     },
     mounted(){
         this.testStartTime = new Date();
