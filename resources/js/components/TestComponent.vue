@@ -114,6 +114,7 @@ export default {
         confirm() {
             this.validate();
             if (!this.error) {
+                this.$refs.answerInput.value = this.$refs.answerInput.value.toLowerCase(); 
                 this.answers.push(this.$refs.answerInput.value);
                 if (
                     this.$refs.answerInput.value ===
