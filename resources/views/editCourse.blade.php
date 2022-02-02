@@ -49,7 +49,7 @@
                 <h1 class="display-4 text-capitalize">{{$course->name}}</h1>
             </div>
             <div class='flex justify-content-center px-3 py-3 pt-md-5 pb-md-4 mx-auto text-center'>
-                <edit-component course="{{$course}}" wordsprops="{{$words}}"></edit-component>
+                <add-component course="{{$course}}" wordsprops="{{$words}}"></add-component>
             </div>
             <footer class="my-5 pt-5 text-muted text-center text-small">
                 <p class="mb-1">© 2022 Łukasz Cysewski</p>

@@ -48,8 +48,8 @@
         </div>
         <input
             type="button"
-            @click="submitForm"
-            value="Add Course"
+            @click="submit"
+            :value="status ? 'Add Course' : 'Edit Course'"
             class="btn btn-primary"
         />
     </div>
@@ -58,11 +58,15 @@
 import WordInput from "./WordInputComponent";
 import ModalComponent from "./ModalComponent";
 
+const ADD = true;
+const EDIT = false;
+
 export default {
     components: {
         WordInput,
         ModalComponent,
     },
+    props: ["course", "wordsprops"],
     data() {
         return {
             words: [
@@ -75,6 +79,7 @@ export default {
             errorTitle: "",
             errorMessage: "",
             name: "",
+            status: true,
         };
     },
     methods: {
@@ -116,32 +121,66 @@ export default {
                 }
             });
         },
-        submitForm() {
+        submit() {
             this.validate();
             if (!this.error) {
                 const courseData = {
                     name: this.name,
                 };
-                axios
-                    .post(`/api/courses`, courseData)
-                    .then((res) => {
-                        const data = {
-                            words: [],
-                            course_id: 0,
-                        };
-                        this.words.forEach((word) => {
-                            data.words.push({
-                                polish: word.polish,
-                                english: word.english,
+                const data = {
+                    words: [],
+                    course_id: 0,
+                };
+                if (this.status) {
+                    const courseData = {
+                        name: this.name,
+                    };
+                    axios
+                        .post(`/api/courses`, courseData)
+                        .then((res) => {
+                            this.words.forEach((word) => {
+                                data.words.push({
+                                    polish: word.polish,
+                                    english: word.english,
+                                });
                             });
-                        });
-                        axios
-                            .post(`/api/words`, data)
-                            .then((res) => console.log(response))
-                            .catch((error) => console.log(error.response));
-                    })
-                    .catch((error) => console.log(error))
-                    .then(() => (window.location.href = "/courses"));
+                            axios
+                                .post(`/api/words`, data)
+                                .then((res) => console.log(response))
+                                .catch((error) => console.log(error.response));
+                        })
+                        .catch((error) => console.log(error))
+                        .then(() => (window.location.href = "/courses"));
+                } else {
+                    const course = JSON.parse(this.course);
+                    const words = JSON.parse(this.wordsprops);
+                    data.course_id = course.id;
+
+                    axios
+                        .patch(`/api/courses/${course.id}`, courseData)
+                        .then((res) => {
+                            words.forEach((item) =>
+                                axios
+                                    .delete(`/api/words/${item.id}`)
+                                    .then((res) => console.log(res))
+                                    .catch((error) => console.log(error))
+                            );
+                        })
+                        .then((res) => {
+                            this.words.forEach((word) => {
+                                data.words.push({
+                                    polish: word.polish,
+                                    english: word.english,
+                                });
+                            });
+                            axios
+                                .post(`/api/words`, data)
+                                .then((res) => console.log(res))
+                                .catch((error) => console.log(error));
+                        })
+                        .catch((error) => console.log(error))
+                        .then(() => (window.location.href = "/courses"));
+                }
             }
         },
         closeModal() {
@@ -149,5 +188,20 @@ export default {
         },
     },
     computed: {},
+    created() {
+        if (this.course !== undefined) {
+            this.status = EDIT;
+            this.words = [];
+            this.name = JSON.parse(this.course).name;
+            JSON.parse(this.wordsprops).forEach((word) => {
+                this.words.push({
+                    polish: word.polish,
+                    english: word.english,
+                });
+            });
+        } else {
+            this.statut = ADD;
+        }
+    },
 };
 </script>

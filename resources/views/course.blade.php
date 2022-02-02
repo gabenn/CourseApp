@@ -27,7 +27,6 @@
         <script defer>
             
             const deleteCourse = courseId => { 
-                console.log(courseId)
                 axios.delete(`${window.location.origin}/api/courses/${courseId}`)
                 .then((res) => {
                     console.log(res);
@@ -70,7 +69,7 @@
                 <?php
                 $time = count($words)*30;
                 ?>
-                Max test time: {{$time >= 60 ? ((floor($time/60))." minutes ".($time%60)." seconds") : ($time." seconds")}}
+                Max test time: {{$time >= 60 ? ((floor($time/60))." min ".($time%60)." seconds") : ($time." seconds")}}
             </p>
             <div class='container flex flex-row justify-content-around '>
                 <div>
