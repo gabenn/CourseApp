@@ -115,7 +115,8 @@ export default {
         submitForm() {
             this.validate();
             if (!this.error) {
-                const words = JSON.parse(this.words);
+                const course = JSON.parse(this.course);
+                const words = JSON.parse(this.wordsprops);
                 const courseData = {
                     name: this.name,
                 };
