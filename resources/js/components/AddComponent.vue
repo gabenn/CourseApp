@@ -100,56 +100,46 @@ export default {
                 this.errorTitle = "Course Name Error";
                 this.errorMessage = "Course Name input is empty";
             }
-            if (
-                this.words.polish.length === 0 ||
-                this.words.polish.length === 0
-            ) {
+            if (this.words.length === 0) {
                 this.error = true;
                 this.errorTitle = "Words Error";
                 this.errorMessage = "Create Some Words";
             }
-            const polish = this.words.polish;
-            const english = this.words.english;
-            for (let i = 0; i < polish.length; i++) {
-                if (
-                    polish[i] === "" ||
-                    polish[i] === undefined ||
-                    english[i] === "" ||
-                    english[i] === undefined
-                ) {
+            this.words.forEach((word) => {
+                if (word.polish === "" || word.english === "") {
                     this.error = true;
                     this.errorTitle = "Words Error";
                     this.errorMessage = "Fill All Inputs";
                 }
-            }
+            });
         },
         submitForm() {
             this.validate();
-            // if (!this.error) {
-            //     const courseData = {
-            //         name: this.name,
-            //     };
-            //     axios
-            //         .post(`/api/courses`, courseData)
-            //         .then((res) => {
-            //             const data = {
-            //                 words: [],
-            //                 course_id: 0,
-            //             };
-            //             for (let i = 0; i < this.wordsQuantity; i++) {
-            //                 data.words.push({
-            //                     polish: this.words.polish[i],
-            //                     english: this.words.english[i],
-            //                 });
-            //             }
-            //             axios
-            //                 .post(`/api/words`, data)
-            //                 .then((res) => console.log(response))
-            //                 .catch((error) => console.log(error.response));
-            //         })
-            //         .catch((error) => console.log(error))
-            //         .then(() => (window.location.href = "/courses"));
-            // }
+            if (!this.error) {
+                const courseData = {
+                    name: this.name,
+                };
+                axios
+                    .post(`/api/courses`, courseData)
+                    .then((res) => {
+                        const data = {
+                            words: [],
+                            course_id: 0,
+                        };
+                        this.words.forEach((word) => {
+                            data.words.push({
+                                polish: word.polish,
+                                english: word.english,
+                            });
+                        });
+                        axios
+                            .post(`/api/words`, data)
+                            .then((res) => console.log(response))
+                            .catch((error) => console.log(error.response));
+                    })
+                    .catch((error) => console.log(error))
+                    .then(() => (window.location.href = "/courses"));
+            }
         },
         closeModal() {
             this.error = false;
