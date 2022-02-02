@@ -14,7 +14,7 @@
                 class="form-control"
                 type="text"
                 placeholder="Course Name"
-                ref="courseNameInput"
+                v-model="name"
             />
         </div>
         <div>
@@ -23,28 +23,25 @@
                 min="1"
                 max="20"
                 type="number"
-                ref="wordsQuantityInput"
+                :value="words.length"
                 placeholder="Words Quantity"
-                @change="displayWordsInputs"
                 class="form-control"
+                @change="changeInputs"
             />
         </div>
-        <div class="flex flex-row mt-5 mb-5">
-            <ol class="flex flex-column">
-                <li v-for="input in polishWordsInputs">
+        <div id="wordsBox" class="flex flex-row mt-5 mb-5">
+            <ol class="flex flex-column px-0">
+                <li
+                    v-for="word in words"
+                    class="my-2 flex justify-content-center"
+                >
                     <WordInput
-                        v-bind:placeholderText="`Polish Word`"
-                        @read="readAllWords"
-                        ref="polishWordsInputs"
+                        v-model="word.polish"
+                        v-bind:placeholderText="'Polish Word'"
                     ></WordInput>
-                </li>
-            </ol>
-            <ol class="flex flex-column">
-                <li v-for="input in englishWordsInputs">
                     <WordInput
-                        v-bind:placeholderText="`English Word`"
-                        @read="readAllWords"
-                        ref="englishWordsInputs"
+                        v-model="word.english"
+                        v-bind:placeholderText="'English Word'"
                     ></WordInput>
                 </li>
             </ol>
@@ -52,7 +49,7 @@
         <input
             type="button"
             @click="submitForm"
-            value="Edit Course"
+            value="Add Course"
             class="btn btn-primary"
         />
     </div>
@@ -66,55 +63,61 @@ export default {
         WordInput,
         ModalComponent,
     },
-    props: ["course", "words"],
+    props: ["course", "wordsprops"],
     data() {
         return {
-            polishWordsInputs: [],
-            englishWordsInputs: [],
-            polishWords: [],
-            englishWords: [],
+            words: [],
             error: false,
             errorTitle: "",
             errorMessage: "",
+            name: "",
         };
     },
     methods: {
-        displayWordsInputs() {
-            this.polishWords = [];
-            this.englishWords = [];
-            this.polishWordsInputs = [];
-            this.englishWordsInputs = [];
-
-            let wordsQuantity = this.$refs.wordsQuantityInput.value;
-            wordsQuantity = wordsQuantity > 0 ? wordsQuantity : 1;
-            wordsQuantity = wordsQuantity < 20 ? wordsQuantity : 20;
-
-            for (let i = 0; i < wordsQuantity; i++) {
-                const polishWordInput = "";
-                this.polishWordsInputs.push(polishWordInput);
-                this.englishWordsInputs.push(polishWordInput);
+        changeInputs(event) {
+            if (event.target.value > this.words.length) {
+                this.addInput();
+            } else {
+                this.removeInput(event.target.value);
             }
         },
-        readAllWords() {
-            this.polishWords = [];
-            this.englishWords = [];
-
-            this.$refs.polishWordsInputs.forEach((input) => {
-                this.polishWords.push(input.$el.value);
+        addInput() {
+            this.words.push({
+                polish: "",
+                english: "",
             });
-
-            this.$refs.englishWordsInputs.forEach((input) =>
-                this.englishWords.push(input.$el.value)
-            );
+        },
+        removeInput(value) {
+            this.words = this.words.slice(0, value);
+            if (this.words.length === 0) {
+                this.addInput();
+            }
+        },
+        validate() {
+            if (this.name === "") {
+                this.error = true;
+                this.errorTitle = "Course Name Error";
+                this.errorMessage = "Course Name input is empty";
+            }
+            if (this.words.length === 0) {
+                this.error = true;
+                this.errorTitle = "Words Error";
+                this.errorMessage = "Create Some Words";
+            }
+            this.words.forEach((word) => {
+                if (word.polish === "" || word.english === "") {
+                    this.error = true;
+                    this.errorTitle = "Words Error";
+                    this.errorMessage = "Fill All Inputs";
+                }
+            });
         },
         submitForm() {
-            this.readAllWords();
             this.validate();
             if (!this.error) {
-                const course = JSON.parse(this.course);
                 const words = JSON.parse(this.words);
                 const courseData = {
-                    name: this.$refs.courseNameInput.value,
+                    name: this.name,
                 };
                 const data = {
                     words: [],
@@ -132,12 +135,12 @@ export default {
                         );
                     })
                     .then((res) => {
-                        for (let i = 0; i < this.polishWords.length; i++) {
+                        this.words.forEach((word) => {
                             data.words.push({
-                                polish: this.polishWords[i],
-                                english: this.englishWords[i],
+                                polish: word.polish,
+                                english: word.english,
                             });
-                        }
+                        });
                         axios
                             .post(`/api/words`, data)
                             .then((res) => console.log(res))
@@ -147,65 +150,18 @@ export default {
                     .then(() => (window.location.href = "/courses"));
             }
         },
-        validate() {
-            if (this.$refs.courseNameInput.value === "") {
-                this.error = true;
-                this.errorTitle = "Course Name Error";
-                this.errorMessage = "Course Name input is empty";
-            }
-            if (
-                this.polishWords.length === 0 ||
-                this.englishWords.length === 0
-            ) {
-                this.error = true;
-                this.errorTitle = "Words Error";
-                this.errorMessage = "Create Some Words";
-            }
-            this.polishWords.forEach((word) => {
-                if (word === "") {
-                    this.error = true;
-                    this.errorTitle = "Words Error";
-                    this.errorMessage = "Fill All Inputs";
-                }
-            });
-            this.englishWords.forEach((word) => {
-                if (word === "") {
-                    this.error = true;
-                    this.errorTitle = "Words Error";
-                    this.errorMessage = "Fill All Inputs";
-                }
-            });
-        },
         closeModal() {
             this.error = false;
         },
     },
     created() {
-        const wordsArray = JSON.parse(this.words);
-        if (wordsArray.length > 0)
-            wordsArray.forEach((word) => {
-                const polishWordInput = "";
-                this.polishWordsInputs.push(polishWordInput);
-                this.englishWordsInputs.push(polishWordInput);
-
-                this.polishWords.push(word.polish);
-                this.englishWords.push(word.english);
+        this.name = JSON.parse(this.course).name;
+        JSON.parse(this.wordsprops).forEach((word) => {
+            this.words.push({
+                polish: word.polish,
+                english: word.english,
             });
-    },
-    mounted() {
-        const wordsArray = JSON.parse(this.words);
-        const course = JSON.parse(this.course);
-
-        if (this.$refs.polishWordsInputs !== undefined) {
-            this.$refs.polishWordsInputs.forEach(
-                (input, i) => (input.$el.value = this.polishWords[i])
-            );
-            this.$refs.englishWordsInputs.forEach(
-                (input, i) => (input.$el.value = this.englishWords[i])
-            );
-        }
-        this.$refs.wordsQuantityInput.value = wordsArray.length;
-        this.$refs.courseNameInput.value = course.name;
+        });
     },
 };
 </script>

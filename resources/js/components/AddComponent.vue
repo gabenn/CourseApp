@@ -23,23 +23,22 @@
                 min="1"
                 max="20"
                 type="number"
-                v-model.number="wordsQuantity"
+                :value="words.length"
                 placeholder="Words Quantity"
                 class="form-control"
                 @change="changeInputs"
             />
         </div>
         <div id="wordsBox" class="flex flex-row mt-5 mb-5">
-            <ol class="flex flex-column">
-                <li v-for="word in words">
+            <ol class="flex flex-column px-0">
+                <li
+                    v-for="word in words"
+                    class="my-2 flex justify-content-center"
+                >
                     <WordInput
                         v-model="word.polish"
                         v-bind:placeholderText="'Polish Word'"
                     ></WordInput>
-                </li>
-            </ol>
-            <ol class="flex flex-column">
-                <li v-for="word in words">
                     <WordInput
                         v-model="word.english"
                         v-bind:placeholderText="'English Word'"
@@ -75,15 +74,16 @@ export default {
             error: false,
             errorTitle: "",
             errorMessage: "",
-            wordsQuantity: 1,
             name: "",
         };
     },
     methods: {
-        changeInputs() {
-            if (this.wordsQuantity > this.words.length) {
+        changeInputs(event) {
+            if (event.target.value > this.words.length) {
                 this.addInput();
-            } else this.removeInput();
+            } else {
+                this.removeInput(event.target.value);
+            }
         },
         addInput() {
             this.words.push({
@@ -91,8 +91,11 @@ export default {
                 english: "",
             });
         },
-        removeInput() {
-            this.words = this.words.slice(0, this.wordsQuantity);
+        removeInput(value) {
+            this.words = this.words.slice(0, value);
+            if (this.words.length === 0) {
+                this.addInput();
+            }
         },
         validate() {
             if (this.name === "") {
@@ -146,8 +149,5 @@ export default {
         },
     },
     computed: {},
-    mounted() {
-        this.wordsQuantityInput = 1;
-    },
 };
 </script>

@@ -4,7 +4,7 @@
         :placeholder="placeholderText"
         v-bind:value="value"
         v-on:input="$emit('input', $event.target.value)"
-        class="form-control"
+        class="form-control mx-2"
     />
 </template>
 <script>
