@@ -104,7 +104,6 @@ export default {
             errorMessage: "",
             cheat: false,
             testStartTime: 0,
-            testEndTime: 0,
             testTotalTime:0,
             testMaxTime:0,
             pass: false,
@@ -130,8 +129,7 @@ export default {
                     this.$refs.answerInput.focus();
                 } else {
                     this.test = false;
-                    this.testEndTime = new Date();
-                    this.testTotalTime = (this.testEndTime.getTime() - this.testStartTime.getTime())/1000
+                    this.testTotalTime = (new Date().getTime() - this.testStartTime.getTime())/1000
                     if(this.goodAnswers/this.activeWord > 0.5 && this.testTotalTime < this.testMaxTime) this.pass = true
                     else {
                         this.pass = false
