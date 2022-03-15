@@ -5,7 +5,7 @@
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <meta name="csrf-token" content="{{ csrf_token() }}" />
 
-        <title>Laravel</title>
+        <title>{{$course->name}}</title>
         <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/css/bootstrap.min.css" integrity="sha384-TX8t27EcRE3e/ihU7zmQxVncDAy5uIKz4rEkgIXeMed4M0jlfIDPvg6uqKI2xXr2" crossorigin="anonymous">
         
         <!-- Fonts -->
@@ -27,7 +27,6 @@
         <script defer>
             
             const deleteCourse = courseId => { 
-                console.log(courseId)
                 axios.delete(`${window.location.origin}/api/courses/${courseId}`)
                 .then((res) => {
                     console.log(res);
@@ -63,9 +62,15 @@
             <div class='flex justify-content-center'>
                 <a href="/edit-course/{{$course->id}}"><button class='btn btn-primary m-2'>Edit</button></a>
                 <a href="/test/{{$course->id}}"><button class='btn btn-primary m-2'>Test</button></a>
-                <button id='deleteCourseBtn' onclick='deleteCourse({{$course->id}})' class='btn btn-danger m-2'>Delete</button>
+                <button onclick='deleteCourse({{$course->id}})' class='btn btn-danger m-2'>Delete</button>
             </div>
             <hr/>
+            <p class='text-center'>
+                <?php
+                $time = count($words)*30;
+                ?>
+                Max test time: {{$time >= 60 ? ((floor($time/60))." min ".($time%60)." seconds") : ($time." seconds")}}
+            </p>
             <div class='container flex flex-row justify-content-around '>
                 <div>
                     @foreach($words as $word)

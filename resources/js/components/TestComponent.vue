@@ -12,6 +12,9 @@
                 </ModalComponent>
                 <div>
                     <h3>Word {{ activeWord }}/{{ wordsArray.length }}</h3>
+                    <h5>Max Time: {{maxTime >= 60 
+                    ? ((Math.floor(maxTime/60))+" min "+(maxTime%60)+" seconds") 
+                    : (maxTime+" seconds")}}</h5>
                 </div>
                 <div class="flex justify-content-center">
                     <div>
@@ -24,7 +27,8 @@
                             type="text"
                             class="form-control"
                             placeholder="English Word"
-                            ref="answerInput"
+                            v-model="answer"
+                            ref='answerInput'
                         />
                     </div>
                 </div>
@@ -34,19 +38,24 @@
                     </button>
                 </div>
             </div>
-            <div v-else>
-                <ModalComponent
-                    v-if="cheat"
-                    :error="cheat"
-                    :message="'Cheating detected. Refresh page to start test again'"
-                    :title="'Cheating'"
-                    @closeModal="closeModal"
-                ></ModalComponent>
-            </div>
+            <ModalComponent
+                v-else
+                :error="cheat"
+                :message="'Cheating detected. Refresh page to start test again'"
+                :title="'Cheating'"
+                @closeModal="closeModal"
+            ></ModalComponent>
         </div>
         <div v-else class="flex flex-column justify-content-center">
-            <div class="h3 m-3 flex justify-content-center">
-                Score: {{ this.goodAnswers }}/{{ this.wordsArray.length }}
+            <div class="h3 m-3 flex justify-content-center text-center flex-column ">
+                <p v-if='pass' class='text-success'>
+                    You Passed The Test
+                </p>
+                <p v-else class='text-danger'>
+                    You Failed The Test <br/> {{this.errorMessage}}
+                </p>
+                <p>Your Score: {{ this.good }}/{{ this.wordsArray.length }}</p>
+                <p>Your Time: {{this.totalTime}}seconds</p>
             </div>
             <div class="h3 m-3 flex justify-content-center">
                 <button class="btn btn-success m-3" @click="goBack">
@@ -59,14 +68,14 @@
             <div class="h3 m-3 flex justify-content-around">
                 <ul class="list-group">
                     <li
-                        v-for="(answer, index) in answers"
+                        v-for="(answer, i) in answers"
                         :class="
-                            wordsArray[index].english == answer
+                            wordsArray[i].english === answer
                                 ? 'list-group-item border border-success text-success my-2'
                                 : 'list-group-item border border-danger text-danger my-2'
                         "
                     >
-                        {{ `${wordsArray[index].polish} - ${answer}`}}
+                        {{ `${wordsArray[i].polish} - ${answer}`}}
                     </li>
                 </ul>
             </div>
@@ -84,36 +93,52 @@ export default {
     props: ["course", "words"],
     data() {
         return {
-            goodAnswers: 0,
             activeWord: 1,
-            wordsArray: [],
+            answer: '',
             answers: [],
-            test: true,
+            good: 0,
+            wordsArray: [],
+            startTime: new Date(),
+            totalTime:0,
+            maxTime:0,
             error: false,
             errorTitle: "",
             errorMessage: "",
+            test: true,
             cheat: false,
+            pass: false,
         };
     },
     methods: {
         confirm() {
             this.validate();
             if (!this.error) {
-                this.answers.push(this.$refs.answerInput.value);
+                this.answer = this.answer.toLowerCase(); 
+                this.answers.push(this.answer);
                 if (
-                    this.$refs.answerInput.value ===
+                    this.answer ===
                     this.wordsArray[this.activeWord - 1].english
                 ) {
-                    this.goodAnswers++;
-                    this.$refs.answerInput.value = "";
+                    this.good++;
+                    this.answer = "";
                     this.$refs.answerInput.focus();
                 }
                 if (this.activeWord < this.wordsArray.length) {
                     this.activeWord++;
-                    this.$refs.answerInput.value = "";
+                    this.answer = "";
                     this.$refs.answerInput.focus();
                 } else {
                     this.test = false;
+                    this.totalTime = (new Date().getTime() - this.startTime.getTime())/1000
+                    const score = this.good/this.activeWord; 
+                    const passTime = this.totalTime < this.maxTime;
+                    if(score > 0.5 && passTime) this.pass = true
+                    else {
+                        this.pass = false
+                        if(score < 0.5 && !passTime) this.errorMessage = 'Score < 50% And Time > Max Test Time'
+                        else if(score < 0.5) this.errorMessage = "Score < 50%"
+                        else if(!passTime) this.errorMessage = "Time > Max Test Time"
+                    }
                 }
             }
         },
@@ -123,7 +148,7 @@ export default {
         },
         reRun: () => document.location.reload(),
         validate() {
-            if (this.$refs.answerInput.value === "") {
+            if (this.answer === "") {
                 this.error = true;
                 this.errorTitle = "Answer Input Error";
                 this.errorMessage = "Answer input is empty";
@@ -136,11 +161,13 @@ export default {
     created() {
         this.wordsArray = JSON.parse(this.words);
         const cheaterInterval = window.setInterval(() => {
-            if (!document.hasFocus() && !this.cheat) {
+            if (!document.hasFocus()) {
                 this.cheat = true;
                 window.clearInterval(cheaterInterval);
             }
         }, 1000);
+        
+        this.maxTime = this.wordsArray.length * 30;
     },
 };
 </script>

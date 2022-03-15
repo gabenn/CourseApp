@@ -5,7 +5,7 @@
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <meta http-equiv="Content-Security-Policy" content="upgrade-insecure-requests">
 
-        <title>Laravel</title>
+        <title>Main</title>
         <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/css/bootstrap.min.css" integrity="sha384-TX8t27EcRE3e/ihU7zmQxVncDAy5uIKz4rEkgIXeMed4M0jlfIDPvg6uqKI2xXr2" crossorigin="anonymous">
         
         <!-- Fonts -->
@@ -55,6 +55,10 @@
                         <li><a href="/add-course" class="nav-link px-2 link-dark">Add Course</a></li>
                     </ul>
                 </header>
+                <h1>Hello world</h1>
+                <div>
+                    Lorem ipsum dolor sit, amet consectetur adipisicing elit. Porro itaque, explicabo quaerat tempore odit iure ea aperiam suscipit enim ipsum consectetur corporis. Modi sequi suscipit optio illo vel, officiis nostrum.    
+                </div>
         </div>
     </body>
 </html>

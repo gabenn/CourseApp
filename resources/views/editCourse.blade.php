@@ -5,7 +5,7 @@
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <meta name="csrf-token" content="{{ csrf_token() }}" />
 
-        <title>Laravel</title>
+        <title>Edit Course</title>
         <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/css/bootstrap.min.css" integrity="sha384-TX8t27EcRE3e/ihU7zmQxVncDAy5uIKz4rEkgIXeMed4M0jlfIDPvg6uqKI2xXr2" crossorigin="anonymous">
         
         <!-- Fonts -->
@@ -49,7 +49,7 @@
                 <h1 class="display-4 text-capitalize">{{$course->name}}</h1>
             </div>
             <div class='flex justify-content-center px-3 py-3 pt-md-5 pb-md-4 mx-auto text-center'>
-                <edit-component course="{{$course}}" words="{{$words}}"></edit-component>
+                <add-component course="{{$course}}" wordsprops="{{$words}}"></add-component>
             </div>
             <footer class="my-5 pt-5 text-muted text-center text-small">
                 <p class="mb-1">© 2022 Łukasz Cysewski</p>

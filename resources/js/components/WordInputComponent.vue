@@ -1,20 +1,17 @@
 <template>
     <input
         type="text"
-        :placeholder="plholder"
-        @input="$emit('read')"
-        class="form-control"
+        :placeholder="placeholderText"
+        v-bind:value="value"
+        v-on:input="$emit('input', $event.target.value)"
+        class="form-control mx-2"
     />
 </template>
 <script>
 export default {
     props: {
         placeholderText: String,
-    },
-    data() {
-        return {
-            plholder: this.placeholderText,
-        };
+        value: String,
     },
 };
 </script>

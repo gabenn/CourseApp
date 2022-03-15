@@ -14,8 +14,7 @@
                 class="form-control"
                 type="text"
                 placeholder="Course Name"
-                id="courseNameInput"
-                ref="courseNameInput"
+                v-model="name"
             />
         </div>
         <div>
@@ -24,37 +23,33 @@
                 min="1"
                 max="20"
                 type="number"
-                id="wordsQuantityInput"
-                ref="wordsQuantityInput"
+                :value="words.length"
                 placeholder="Words Quantity"
-                @change="displayWordsInputs"
                 class="form-control"
+                @change="changeInputs"
             />
         </div>
         <div id="wordsBox" class="flex flex-row mt-5 mb-5">
-            <ol class="flex flex-column" id="polishWordsBox">
-                <li v-for="input in polishWordsInputs">
+            <ol class="flex flex-column px-0">
+                <li
+                    v-for="word in words"
+                    class="my-2 flex justify-content-center"
+                >
                     <WordInput
-                        v-bind:placeholderText="`Polish Word`"
-                        @read="readAllWords"
-                        ref="polishWordsInputs"
+                        v-model="word.polish"
+                        v-bind:placeholderText="'Polish Word'"
                     ></WordInput>
-                </li>
-            </ol>
-            <ol class="flex flex-column" id="englishWordsBox">
-                <li v-for="input in englishWordsInputs">
                     <WordInput
-                        v-bind:placeholderText="`English Word`"
-                        @read="readAllWords"
-                        ref="englishWordsInputs"
+                        v-model="word.english"
+                        v-bind:placeholderText="'English Word'"
                     ></WordInput>
                 </li>
             </ol>
         </div>
         <input
             type="button"
-            @click="submitForm"
-            value="Add Course"
+            @click="submit"
+            :value="status ? 'Add Course' : 'Edit Course'"
             class="btn btn-primary"
         />
     </div>
@@ -63,115 +58,129 @@
 import WordInput from "./WordInputComponent";
 import ModalComponent from "./ModalComponent";
 
+const ADD = true;
+const EDIT = false;
+
 export default {
     components: {
         WordInput,
         ModalComponent,
     },
+    props: ["course", "wordsprops"],
     data() {
         return {
-            polishWordsInputs: [],
-            englishWordsInputs: [],
-            polishWords: [],
-            englishWords: [],
+            words: [
+                {
+                    polish: "",
+                    english: "",
+                },
+            ],
             error: false,
             errorTitle: "",
             errorMessage: "",
+            name: "",
+            status: true,
         };
     },
     methods: {
-        displayWordsInputs() {
-            this.polishWordsInputs.forEach((word) => {});
-            this.englishWordsInputs.forEach((word) => {});
-
-            this.polishWords = [];
-            this.englishWords = [];
-            this.polishWordsInputs = [];
-            this.englishWordsInputs = [];
-
-            let wordsQuantity = this.$refs.wordsQuantityInput.value;
-            wordsQuantity = wordsQuantity > 0 ? wordsQuantity : 1;
-            wordsQuantity = wordsQuantity < 20 ? wordsQuantity : 20;
-
-            for (let i = 0; i < wordsQuantity; i++) {
-                const polishWordInput = "";
-                this.polishWordsInputs.push(polishWordInput);
-                this.englishWordsInputs.push(polishWordInput);
+        changeInputs(event) {
+            if (event.target.value > this.words.length) {
+                this.addInput();
+            } else {
+                this.removeInput(event.target.value);
             }
         },
-        readAllWords() {
-            this.polishWords = [];
-            this.englishWords = [];
-
-            this.$refs.polishWordsInputs.forEach((input) =>
-                this.polishWords.push(input.$el.value)
-            );
-
-            this.$refs.englishWordsInputs.forEach((input) =>
-                this.englishWords.push(input.$el.value)
-            );
+        addInput() {
+            this.words.push({
+                polish: "",
+                english: "",
+            });
+        },
+        removeInput(value) {
+            this.words = this.words.slice(0, value);
+            if (this.words.length === 0) {
+                this.addInput();
+            }
         },
         validate() {
-            console.log(this.polishWords);
-            console.log(this.englishWords);
-            if (this.$refs.courseNameInput.value === "") {
+            if (this.name === "") {
                 this.error = true;
                 this.errorTitle = "Course Name Error";
                 this.errorMessage = "Course Name input is empty";
             }
-            if (
-                this.polishWords.length === 0 ||
-                this.englishWords.length === 0
-            ) {
+            if (this.words.length === 0) {
                 this.error = true;
                 this.errorTitle = "Words Error";
                 this.errorMessage = "Create Some Words";
             }
-            this.polishWords.forEach((word) => {
-                console.log("pl", word);
-                if (word === "") {
-                    this.error = true;
-                    this.errorTitle = "Words Error";
-                    this.errorMessage = "Fill All Inputs";
-                }
-            });
-            this.englishWords.forEach((word) => {
-                console.log("eng", word);
-                if (word === "") {
+            this.words.forEach((word) => {
+                if (word.polish === "" || word.english === "") {
                     this.error = true;
                     this.errorTitle = "Words Error";
                     this.errorMessage = "Fill All Inputs";
                 }
             });
         },
-        submitForm() {
+        submit() {
             this.validate();
             if (!this.error) {
                 const courseData = {
-                    name: this.$refs.courseNameInput.value,
+                    name: this.name,
                 };
-                axios
-                    .post(`${window.location.origin}/api/courses`, courseData)
-                    .then((res) => {
-                        const data = {
-                            words: [],
-                            course_id: 0,
-                        };
-                        for (let i = 0; i < this.polishWords.length; i++) {
-                            data.words.push({
-                                polish: this.polishWords[i],
-                                english: this.englishWords[i],
+                const data = {
+                    words: [],
+                    course_id: 0,
+                };
+                if (this.status) {
+                    const courseData = {
+                        name: this.name,
+                    };
+                    axios
+                        .post(`/api/courses`, courseData)
+                        .then((res) => {
+                            this.words.forEach((word) => {
+                                data.words.push({
+                                    polish: word.polish,
+                                    english: word.english,
+                                });
                             });
-                        }
-                        axios
-                            .post(`${window.location.origin}/api/words`, data)
-                            .then((res) => console.log(response))
-                            .catch((error) => console.log(error.response));
-                    })
-                    .catch((error) =>
-                        error != undefined ? console.log(error.response) : null
-                    )
-                    .then(() => (window.location.href = "/courses"));
+                            axios
+                                .post(`/api/words`, data)
+                                .then((res) => console.log(response))
+                                .catch((error) => console.log(error.response));
+                        })
+                        .catch((error) => console.log(error))
+                        .then(() => (window.location.href = "/courses"));
+                } else {
+                    const course = JSON.parse(this.course);
+                    const words = JSON.parse(this.wordsprops);
+                    data.course_id = course.id;
+
+                    axios
+                        .patch(`/api/courses/${course.id}`, courseData)
+                        .then((res) => {
+                            words.forEach((item) =>
+                                axios
+                                    .delete(`/api/words/${item.id}`)
+                                    .then((res) => console.log(res))
+                                    .catch((error) => console.log(error))
+                            );
+                        })
+                        .then((res) => {
+                            this.words.forEach((word) => {
+                                data.words.push({
+                                    polish: word.polish,
+                                    english: word.english,
+                                });
+                            });
+                            axios
+                                .post(`/api/words`, data)
+                                .then((res) => console.log(res))
+                                .catch((error) => console.log(error));
+                        })
+                        .catch((error) => console.log(error))
+                        .then(() => (window.location.href = "/courses"));
+                }
             }
         },
         closeModal() {
@@ -179,9 +188,20 @@ export default {
         },
     },
     computed: {},
-    mounted() {
-        this.$refs.wordsQuantityInput.value = 1;
-        this.displayWordsInputs();
+    created() {
+        if (this.course !== undefined) {
+            this.status = EDIT;
+            this.words = [];
+            this.name = JSON.parse(this.course).name;
+            JSON.parse(this.wordsprops).forEach((word) => {
+                this.words.push({
+                    polish: word.polish,
+                    english: word.english,
+                });
+            });
+        } else {
+            this.statut = ADD;
+        }
     },
 };
 </script>
