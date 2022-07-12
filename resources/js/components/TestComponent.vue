@@ -1,15 +1,16 @@
 <template>
     <div class="flex flex-column">
+        <notifications position="bottom left" />
         <div v-if="test">
             <div v-if="!cheat">
-                <ModalComponent
+                <!--<ModalComponent
                     v-if="error"
                     :error="error"
                     :message="errorMessage"
                     :title="errorTitle"
                     @closeModal="closeModal"
                 >
-                </ModalComponent>
+                </ModalComponent>-->
                 <div>
                     <h3>Word {{ currentWord }}/{{ wordsArray.length }}</h3>
                     <h5>Max Time: {{maxTime >= 60 
@@ -38,16 +39,16 @@
                     </button>
                 </div>
             </div>
-            <ModalComponent
+            <!--<ModalComponent
                 v-else
                 :error="cheat"
                 :message="'Cheating detected. Refresh page to start test again'"
                 :title="'Cheating'"
                 @closeModal="closeModal"
-            ></ModalComponent>
+            ></ModalComponent>-->
         </div>
         <div v-else class="flex flex-column justify-content-center">
-            <div class="h3 m-3 flex justify-content-center text-center flex-column ">
+            <div class="h3 m-3 flex  justify-content-center text-center flex-column ">
                 <p v-if='pass' class='text-success'>
                     You Passed The Test
                 </p>
@@ -171,7 +172,8 @@ export default {
                 this.error = true;
                 this.errorTitle = "Answer Input Error";
                 this.errorMessage = "Answer input is empty";
-
+                
+                this.$notify({text: "Answer input is empty", error: true}); 
                 // return false;
             }
 
