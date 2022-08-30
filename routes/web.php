@@ -15,9 +15,7 @@ use App\Http\Controllers\ShowController;
 |
 */
 
-Route::get('/', function () {
-    return view('welcome');
-});
+Route::get('/', [ShowController::class, 'courses']);
 
 Route::get('/edit-course/{courseid}', [ShowController::class, 'edit']);
 

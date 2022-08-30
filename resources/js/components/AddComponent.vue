@@ -1,13 +1,6 @@
 <template>
     <div>
-        <ModalComponent
-            v-if="error"
-            :error="error"
-            :message="errorMessage"
-            :title="errorTitle"
-            @closeModal="closeModal"
-        >
-        </ModalComponent>
+        <notifications position="bottom left" />
         <div>
             <label for="courseNameInput">Course Name </label>
             <input
@@ -56,17 +49,17 @@
 </template>
 <script>
 import WordInput from "./WordInputComponent";
-import ModalComponent from "./ModalComponent";
 
-const ADD = true;
-const EDIT = false;
+const COURSE_STATUS = {
+    COURSE_ADD: "ADD",
+    COURSE_EDIT: "EDIT",
+}
 
 export default {
     components: {
         WordInput,
-        ModalComponent,
     },
-    props: ["course", "wordsprops"],
+    props: ["course", "wordsProps"],
     data() {
         return {
             words: [
@@ -75,11 +68,8 @@ export default {
                     english: "",
                 },
             ],
-            error: false,
-            errorTitle: "",
-            errorMessage: "",
             name: "",
-            status: true,
+            status: COURSE_STATUS.COURSE_ADD,
         };
     },
     methods: {
@@ -97,33 +87,32 @@ export default {
             });
         },
         removeInput(value) {
-            this.words = this.words.slice(0, value);
+            this.words = this.words.splice(0, value);
             if (this.words.length === 0) {
                 this.addInput();
             }
         },
         validate() {
+            let validated = true
             if (this.name === "") {
-                this.error = true;
-                this.errorTitle = "Course Name Error";
-                this.errorMessage = "Course Name input is empty";
+                validated = false;
+                this.$notify({text: "Course Name input is empty", duration: 4000}); 
             }
             if (this.words.length === 0) {
-                this.error = true;
-                this.errorTitle = "Words Error";
-                this.errorMessage = "Create Some Words";
+                validated = false;
+                this.$notify({text: "Create Some Words", duration: 4000}); 
             }
             this.words.forEach((word) => {
                 if (word.polish === "" || word.english === "") {
-                    this.error = true;
-                    this.errorTitle = "Words Error";
-                    this.errorMessage = "Fill All Inputs";
+                    validated = false;
+                    this.$notify({text: "Fill All Inputs", duration: 4000}); 
+                    return validated;  //tu coś się buguje potrafi się pojawić parę razy
                 }
             });
+            return validated;
         },
         submit() {
-            this.validate();
-            if (!this.error) {
+            if (this.validate()) {
                 const courseData = {
                     name: this.name,
                 };
@@ -131,7 +120,7 @@ export default {
                     words: [],
                     course_id: 0,
                 };
-                if (this.status) {
+                if (this.status === COURSE_STATUS.COURSE_ADD) {
                     const courseData = {
                         name: this.name,
                     };
@@ -147,13 +136,13 @@ export default {
                             axios
                                 .post(`/api/words`, data)
                                 .then((res) => console.log(response))
-                                .catch((error) => console.log(error.response));
+                                .catch((error) => this.$notify({text: error})) 
                         })
-                        .catch((error) => console.log(error))
+                        .catch((error) => this.$notify({text: error})) 
                         .then(() => (window.location.href = "/courses"));
                 } else {
                     const course = JSON.parse(this.course);
-                    const words = JSON.parse(this.wordsprops);
+                    const words = JSON.parse(this.wordsProps);
                     data.course_id = course.id;
 
                     axios
@@ -163,7 +152,7 @@ export default {
                                 axios
                                     .delete(`/api/words/${item.id}`)
                                     .then((res) => console.log(res))
-                                    .catch((error) => console.log(error))
+                                    .catch((error) => this.$notify({text: error})) 
                             );
                         })
                         .then((res) => {
@@ -176,31 +165,27 @@ export default {
                             axios
                                 .post(`/api/words`, data)
                                 .then((res) => console.log(res))
-                                .catch((error) => console.log(error));
+                                .catch((error) => this.$notify({text: error})); 
                         })
-                        .catch((error) => console.log(error))
+                        .catch((error) => this.$notify({text: error}))
                         .then(() => (window.location.href = "/courses"));
                 }
             }
         },
-        closeModal() {
-            this.error = false;
-        },
     },
-    computed: {},
     created() {
         if (this.course !== undefined) {
-            this.status = EDIT;
+            this.status = COURSE_STATUS.COURSE_EDIT;
             this.words = [];
-            this.name = JSON.parse(this.course).name;
-            JSON.parse(this.wordsprops).forEach((word) => {
+            this.name = JSON.parse(this.course).name; 
+            JSON.parse(this.wordsProps).forEach((word) => {
                 this.words.push({
                     polish: word.polish,
                     english: word.english,
                 });
             });
         } else {
-            this.statut = ADD;
+            this.status = COURSE_STATUS.COURSE_ADD;
         }
     },
 };

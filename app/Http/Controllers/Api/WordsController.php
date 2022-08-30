@@ -29,6 +29,7 @@ class WordsController extends Controller
      */
     public function store(WordRequest $request)
     {
+        // To jest logika którą powinien zając się serwis
         $course = $request->course_id==0 ? Course::latest()->first() : Course::find($request->course_id);       
 
         return $course->words()->createMany($request->words);

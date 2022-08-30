@@ -27,33 +27,16 @@
     </head>
     <body class="antialiased">
         <div id='app'>
-            <header class="d-flex justify-content-center py-3">
-                <ul
-                    class="nav col-12 col-md-auto mb-2 justify-content-center mb-md-0"
-                >
-                    <li>
-                        <a href="/" class="nav-link px-2 link-secondary">Home</a>
-                    </li>
-                    <li>
-                        <a href="/courses" class="nav-link px-2 link-dark">Courses</a>
-                    </li>
-                    <li>
-                        <a href="/words" class="nav-link px-2 link-dark">Words</a>
-                    </li>
-                    <li><a href="/add-course" class="nav-link px-2 link-dark">Add Course</a></li>
-                </ul>
-            </header>
+            @include('templates.header')
             <hr/>
             
             <div class="px-3 py-3 pt-md-5 pb-md-4 mx-auto text-center">
                 <h1 class="display-4 text-capitalize">{{$course->name}}</h1>
             </div>
             <div class='flex justify-content-center px-3 py-3 pt-md-5 pb-md-4 mx-auto text-center'>
-                <add-component course="{{$course}}" wordsprops="{{$words}}"></add-component>
+                <add-component course="{{$course}}" words-props="{{$words}}"></add-component>
             </div>
-            <footer class="my-5 pt-5 text-muted text-center text-small">
-                <p class="mb-1">© 2022 Łukasz Cysewski</p>
-            </footer>
+            @include('templates.footer')
         </div>
     </body>
 </html>
