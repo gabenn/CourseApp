@@ -45,6 +45,9 @@
                     @endforeach
                 </ul>
             </div>
+            <div class='flex justify-content-center'>
+                {{$words->links()}} 
+            </div>
             <hr/>
             @include('templates.footer')
         </div>

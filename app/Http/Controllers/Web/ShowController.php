@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\Web;
 
 use App\Models\Course;
 use App\Models\Word;
@@ -37,7 +37,7 @@ use Illuminate\Routing\Controller as BaseController;
  * 
  * Przykładowa lektura: https://laracasts.com/discuss/channels/laravel/seperate-controllers-for-api-and-web
  */
-class ShowController extends Controller // chyba powinno być extends Controller skoro już jest przygotowany
+class ShowController extends Controller
 {
     use AuthorizesRequests, DispatchesJobs, ValidatesRequests;
     
@@ -76,7 +76,7 @@ class ShowController extends Controller // chyba powinno być extends Controller
     * Wystarczy to zrobić chociaż dla słów, żeby potencjalny rekruter zobaczył że wiesz o co chodzi i bawiłeś się stronicowaniem.
     */
     function words(){
-        $words = Word::all();
+        $words = Word::paginate(10);
         return view('words', ['words' => $words]);
     }
 

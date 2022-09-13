@@ -3,7 +3,7 @@
 use App\Http\Resources\CourseResource;
 use App\Models\Course;
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\ShowController;
+use App\Http\Controllers\Web\ShowController;
 /*
 |--------------------------------------------------------------------------
 | Web Routes
