@@ -7,7 +7,7 @@ use App\Models\Word;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Illuminate\Foundation\Bus\DispatchesJobs;
 use Illuminate\Foundation\Validation\ValidatesRequests;
-use Illuminate\Routing\Controller as BaseController;
+use App\Http\Controllers\Controller;
 
 /**
  * Mimo małego rozmiaru, kontroler wie trochę za dużo; Gdybyśmy chcieli zmienić sposób przechowywania modeli czy dostarczania informacji,
