@@ -8,6 +8,8 @@ use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Illuminate\Foundation\Bus\DispatchesJobs;
 use Illuminate\Foundation\Validation\ValidatesRequests;
 use App\Http\Controllers\Controller;
+use App\Http\Services\CoursesService;
+use App\Http\Services\WordsService;
 
 /**
  * Mimo małego rozmiaru, kontroler wie trochę za dużo; Gdybyśmy chcieli zmienić sposób przechowywania modeli czy dostarczania informacji,
@@ -43,15 +45,15 @@ class ShowController extends Controller
     
     function courses(){
 
-        $courses = Course::all();
+        $courses = CoursesService::getCourses();
     
         return view('courses', ['courses' => $courses]);
     }
 
     function edit($courseId){
 
-        $course = Course::find($courseId);
-        $words = Word::where('course_id',$courseId)->get();
+        $course = CoursesService::getCourseById($courseId);
+        $words = WordsService::getWordsFromCourse($courseId);
         
         return view('editCourse', ['course' => $course, 'words' => $words]);
     }
@@ -62,31 +64,21 @@ class ShowController extends Controller
 
     function course($courseId){
         
-        $course = Course::find($courseId);
-        $words = Word::where('course_id',$courseId)->get();
+        $course = CoursesService::getCourseById($courseId);
+        $words = WordsService::getWordsFromCourse($courseId);
+
         return view('course', ['course' => $course, 'words' => $words]);
     }
 
-    /** 
-    * Listowanie wszystkich słów może być kosztowne jeśli w bazie będą setki, jeśli nie tysiące. Warto zajrzeć w pagination,
-    * tym bardziej że Laravel znacząco to ułatwia. https://laravel.com/docs/9.x/pagination
-    * Dzięki temu nawet przy dużych ilościach danych, czyli potencjalnym środowisku produkcyjnym, aplikacja będzie responsywna i dane będą szybko się wczytywać.
-    *
-    * Oczywiście to samo się odnosi do listowania kursów, ale przy słowach jest to zdecydowanie ważniejsze; na jeden kurs przypada wiele słów.
-    * Wystarczy to zrobić chociaż dla słów, żeby potencjalny rekruter zobaczył że wiesz o co chodzi i bawiłeś się stronicowaniem.
-    */
     function words(){
-        $words = Word::paginate(10);
+        $words = WordsService::getPaginatedWords(10);
         return view('words', ['words' => $words]);
     }
 
-    /**
-     * Zauważ że test, add i edit ściągają dane w ten sam sposób; wystawienie logiki do serwisu zniwelowałoby te i przyszłe duplikacje kodu
-     */
     function test($courseId){
         
-        $course = Course::find($courseId);
-        $words = Word::where('course_id',$courseId)->get();
+        $course = CoursesService::getCourseById($courseId);
+        $words = WordsService::getWordsFromCourse($courseId);
         return view('test', ['course' => $course, 'words' => $words]);
     }
 }
