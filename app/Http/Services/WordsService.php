@@ -1,6 +1,7 @@
 <?php
 namespace App\Http\Services;
 
+use App\Http\Requests\WordRequest;
 use App\Models\Word;
 
 class WordsService{
@@ -18,6 +19,10 @@ class WordsService{
 
     public static function getWordsFromCourse($course_id){
       return Word::where('course_id',$course_id)->get();
+    }
+
+    public static function updateWord(WordRequest $request, Word $word){
+      $word->update($request->validated());
     }
 }
 ?>

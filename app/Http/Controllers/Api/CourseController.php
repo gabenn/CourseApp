@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Api;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\CourseResource;
 use App\Http\Requests\CourseRequest;
+use App\Http\Services\CoursesService;
 use App\Models\Course;
 use Illuminate\Http\Request;
 
@@ -28,7 +29,7 @@ class CourseController extends Controller
      */
     public function store(CourseRequest $request)
     {
-        $course = Course::create($request->validated());
+        $course = CoursesService::createValidatedCourse($request->validated());
 
         return new CourseResource($course);
     }

@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Api;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\WordResource;
 use App\Http\Requests\WordRequest;
+use App\Http\Services\WordsService;
 use App\Models\Word;
 use Illuminate\Http\Request;
 use App\Models\Course;
@@ -29,7 +30,11 @@ class WordsController extends Controller
      */
     public function store(WordRequest $request)
     {
-        // To jest logika którą powinien zając się serwis
+        // Gdy pisałem ten kod tylko ja i Bóg 
+        // wiedział co i dlaczego on robi 
+        // Teraz tylko Bóg
+        // Powodzenia :D
+        // liczba prób: 2
         $course = $request->course_id==0 ? Course::latest()->first() : Course::find($request->course_id);       
 
         return $course->words()->createMany($request->words);
@@ -55,7 +60,7 @@ class WordsController extends Controller
      */
     public function update(WordRequest $request, Word $word)
     {
-        $word->update($request->validated());
+        WordsService::updateWord($request, $word);
         
         return new WordResource($word);
     }
